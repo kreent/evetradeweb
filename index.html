@@ -119,25 +119,10 @@
                     <span>Refinar Búsqueda</span>
                 </button>
             </div>
-            <div class="data-table">
-                <table id="resultsTable">
-                    <thead>
-                        <tr>
-                            <th>TICKER</th>
-                            <th>PRICE</th>
-                            <th>SECTOR</th>
-                            <th>ROIC</th>
-                            <th>PIOTROSKI</th>
-                            <th>GROWTH EST.</th>
-                            <th>INTRINSIC</th>
-                            <th>MOS</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+            <div id="resultsContent" class="results-content-area">
+                <!-- Cards will be injected here -->
+                <div id="resultsGrid" class="cards-grid"></div>
             </div>
-
-
         </div>
     </div>
 
@@ -237,22 +222,8 @@
 
             <div class="ticker-analysis">
                 <h2>Detalle por Acción</h2>
-                <div class="data-table">
-                    <table id="tickerAnalysisTable">
-                        <thead>
-                            <tr>
-                                <th>TICKER</th>
-                                <th>CAPITAL INICIAL</th>
-                                <th>CONTRIBUCIÓN %</th>
-                                <th>GANANCIA/PÉRDIDA</th>
-                                <th>PESO PORTFOLIO</th>
-                                <th>RETORNO %</th>
-                                <th>VALOR ACTUAL</th>
-                                <th>VOLATILIDAD</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+                <div id="portfolioGrid" class="cards-grid">
+                    <!-- Portfolio cards injected here -->
                 </div>
             </div>
 

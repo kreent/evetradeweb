@@ -234,48 +234,80 @@ function initHomeScreen() {
 }
 
 // ================================================================
-// Results Stage 1 - Initial Analysis (Table Format)
+// Results Stage 1 - Initial Analysis (Card Format)
 // ================================================================
 function renderResultsStage1(data) {
     // Update stats
     document.getElementById('totalAnalyzed').textContent = data.total_analyzed || '-';
     document.getElementById('candidatesCount').textContent = data.candidates_count || '-';
 
-    // Render table
-    const tbody = document.querySelector('#resultsTable tbody');
-    tbody.innerHTML = '';
+    // Render cards
+    const container = document.getElementById('resultsGrid');
+    container.innerHTML = '';
 
     if (data.results && Array.isArray(data.results)) {
         data.results.forEach(stock => {
-            const row = createTableRow(stock);
-            tbody.appendChild(row);
+            const card = createStockCard(stock);
+            container.appendChild(card);
         });
     }
 }
 
-function createTableRow(stock) {
-    const tr = document.createElement('tr');
+function createStockCard(stock) {
+    const card = document.createElement('div');
+    card.className = 'stock-card';
 
-    const roicClass = (stock.ROIC || 0) >= 0 ? 'positive' : 'negative';
-    const mosClass = (stock.MOS || 0) >= 0 ? 'positive' : 'negative';
+    const roicClass = (stock.ROIC || 0) >= 0 ? 'color: var(--primary);' : 'color: #ef4444;';
+    const mosClass = (stock.MOS || 0) >= 0 ? 'color: var(--primary);' : 'color: #ef4444;';
+    const initial = getTickerInitial(stock.Ticker);
 
-    tr.innerHTML = `
-        <td>
-            <div style="display: flex; align-items: center;">
-                <span class="ticker-badge">${getTickerInitial(stock.Ticker)}</span>
-                <strong>${stock.Ticker || '-'}</strong>
+    card.innerHTML = `
+        <div class="card-header">
+            <div class="ticker-info">
+                <div class="ticker-symbol">
+                    <div class="ticker-badge-small">${initial}</div>
+                    ${stock.Ticker}
+                </div>
+                <div class="sector-pill">${stock.Sector || 'N/A'}</div>
             </div>
-        </td>
-        <td>${formatCurrency(stock.Price)}</td>
-        <td><span class="sector-tag">${stock.Sector || '-'}</span></td>
-        <td class="${roicClass}">${formatPercent(stock.ROIC, 1)}</td>
-        <td>${stock.Piotroski || '-'}</td>
-        <td>${formatPercent(stock.Growth_Est, 1)}</td>
-        <td>${formatLargeNumber(stock.Intrinsic)}</td>
-        <td class="${mosClass}">${formatPercent(stock.MOS, 1)}</td>
+            <div class="price-info">
+                <span class="price-current">${formatCurrency(stock.Price)}</span>
+                <!-- Assuming formatted percentage logic if available, or just empty for now -->
+            </div>
+        </div>
+        
+        <div class="card-metrics">
+            <div class="metric-item">
+                <span class="metric-title">ROIC</span>
+                <span class="metric-value" style="${roicClass}">${formatPercent(stock.ROIC, 1)}</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">Piotroski</span>
+                <span class="metric-value highlight">${stock.Piotroski}/9</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">Growth</span>
+                <span class="metric-value">${formatPercent(stock.Growth_Est, 1)}</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">MOS</span>
+                <span class="metric-value" style="${mosClass}">${formatPercent(stock.MOS, 1)}</span>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <div style="text-align: left;">
+                <span class="intrinsic-label">Intrinsic Val</span>
+                <span class="intrinsic-value">${formatLargeNumber(stock.Intrinsic)}</span>
+            </div>
+            <div class="valuation-status">
+                <span class="valuation-label">Valuation</span>
+                <span class="valuation-tag">${(stock.MOS || 0) > 0 ? 'UNDERVALUED' : 'OVERVALUED'}</span>
+            </div>
+        </div>
     `;
 
-    return tr;
+    return card;
 }
 
 function initResultsScreen1() {
@@ -301,7 +333,7 @@ function initResultsScreen1() {
 }
 
 // ================================================================
-// Results Stage 2 - Refined Analysis (Categories)
+// Results Stage 2 - Refined Analysis (Category Cards)
 // ================================================================
 function renderResultsStage2(data) {
     const container = document.getElementById('categoriesContainer');
@@ -319,74 +351,34 @@ function renderResultsStage2(data) {
         groupedByCategory[cat].push(item);
     });
 
-    // Category configuration with icons and descriptions
+    // Category configuration
     const categoryConfig = {
-        '✅ Oportunidad': {
-            title: 'Oportunidades',
-            icon: '✅',
-            badge: 'Top Pick',
-            priority: 1
-        },
-        '💎 Gema': {
-            title: 'Gemas Escondidas',
-            icon: '💎',
-            badge: 'Hidden Gems',
-            priority: 2
-        },
-        '⚖️ Precio Justo': {
-            title: 'Precio Justo',
-            icon: '⚖️',
-            badge: 'Fair Value',
-            priority: 3
-        },
-        '🏦 Banco/Seguro': {
-            title: 'Bancos / Seguros',
-            icon: '🏦',
-            badge: 'Financials',
-            priority: 4
-        },
-        '⚠️ Trampa Valor?': {
-            title: 'Posibles Trampas de Valor',
-            icon: '⚠️',
-            badge: 'Caution',
-            priority: 5
-        },
-        '⚠️ Trampa Valor': {
-            title: 'Trampas de Valor',
-            icon: '⚠️',
-            badge: 'Warning',
-            priority: 6
-        },
-        '❌ Cara/Ajustada': {
-            title: 'Sobrevaloradas',
-            icon: '❌',
-            badge: 'Overpriced',
-            priority: 7
-        }
+        '✅ Oportunidad': { title: 'Oportunidades', icon: '✅', badge: 'Top Pick', priority: 1 },
+        '💎 Gema': { title: 'Gemas Escondidas', icon: '💎', badge: 'Hidden Gems', priority: 2 },
+        '⚖️ Precio Justo': { title: 'Precio Justo', icon: '⚖️', badge: 'Fair Value', priority: 3 },
+        '🏦 Banco/Seguro': { title: 'Bancos / Seguros', icon: '🏦', badge: 'Financials', priority: 4 },
+        '⚠️ Trampa Valor?': { title: 'Posibles Trampas de Valor', icon: '⚠️', badge: 'Caution', priority: 5 },
+        '⚠️ Trampa Valor': { title: 'Trampas de Valor', icon: '⚠️', badge: 'Warning', priority: 6 },
+        '❌ Cara/Ajustada': { title: 'Sobrevaloradas', icon: '❌', badge: 'Overpriced', priority: 7 }
     };
 
-    // Sort categories by priority
+    // Sort categories
     const sortedCategories = Object.keys(groupedByCategory).sort((a, b) => {
         const priorityA = categoryConfig[a]?.priority || 999;
         const priorityB = categoryConfig[b]?.priority || 999;
         return priorityA - priorityB;
     });
 
-    // Create sections for each category
+    // Create sections
     sortedCategories.forEach(catKey => {
         const items = groupedByCategory[catKey];
-        const config = categoryConfig[catKey] || {
-            title: catKey,
-            icon: '📊',
-            badge: catKey,
-            priority: 999
-        };
+        const config = categoryConfig[catKey] || { title: catKey, icon: '📊', badge: catKey, priority: 999 };
 
         const categoryData = {
             key: catKey,
             title: config.title,
             icon: config.icon,
-            badge: `${items.length} ${items.length === 1 ? 'acción' : 'acciones'}`,
+            badge: `${items.length} acciones`,
             count: items.length
         };
 
@@ -403,6 +395,7 @@ function renderResultsStage2(data) {
 function createCategorySection(category, items) {
     const section = document.createElement('div');
     section.className = 'category-section';
+    section.style.marginBottom = '40px';
 
     section.innerHTML = `
         <div class="category-header">
@@ -410,104 +403,97 @@ function createCategorySection(category, items) {
             <h2 class="category-title">${category.title}</h2>
             <span class="category-badge">${category.badge}</span>
         </div>
-        <div class="data-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Ticker</th>
-                        <th>Categoría</th>
-                        <th>Sector</th>
-                        <th>Old MOS</th>
-                        <th>Piotroski</th>
-                        <th>ROIC</th>
-                        <th>Real MOS</th>
-                        <th>¿Por qué?</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+        <div class="cards-grid">
+            <!-- Cards injected here -->
         </div>
     `;
 
-    const tbody = section.querySelector('tbody');
+    const grid = section.querySelector('.cards-grid');
     items.forEach(item => {
-        const row = createRefinedTableRow(item);
-        tbody.appendChild(row);
+        const card = createRefinedStockCard(item);
+        grid.appendChild(card);
     });
 
     return section;
 }
 
-function createRefinedTableRow(item) {
-    const tr = document.createElement('tr');
-    tr.dataset.ticker = item.Ticker;
+function createRefinedStockCard(item) {
+    const card = document.createElement('div');
+    card.className = 'stock-card';
+    card.dataset.ticker = item.Ticker;
 
-    const roicClass = (item.ROIC || 0) >= 0 ? 'positive' : 'negative';
+    const roicClass = (item.ROIC || 0) >= 0 ? 'color: var(--primary);' : 'color: #ef4444;';
+    const mosClass = (item.Real_MOS || item.Old_MOS || 0) >= 0 ? 'color: var(--primary);' : 'color: #ef4444;';
     const isSelected = appState.selectedTickers.has(item.Ticker);
+    const initial = getTickerInitial(item.Ticker);
 
-    tr.innerHTML = `
-        <td>
-            <div style="display: flex; align-items: center;">
-                <span class="ticker-badge">${getTickerInitial(item.Ticker)}</span>
-                <strong>${item.Ticker || '-'}</strong>
-            </div>
-        </td>
-        <td>${item.Cat || '-'}</td>
-        <td><span class="sector-tag">${item.Sector || '-'}</span></td>
-        <td>${formatPercent(item.Old_MOS, 1)}</td>
-        <td>${item.Piotroski || '-'}</td>
-        <td class="${roicClass}">${formatPercent(item.ROIC, 1)}</td>
-        <td>${formatPercent(item.Real_MOS, 1)}</td>
-        <td style="max-width: 300px; font-size: 0.875rem; color: var(--text-secondary);">
-            ${item.Why || 'Sin información'}
-        </td>
-        <td>
-            <button class="select-ticker-btn ${isSelected ? 'selected' : ''}" data-ticker="${item.Ticker}">
-                ${isSelected ? '✓' : '+'}
+    card.innerHTML = `
+         <div class="card-action">
+            <button class="select-card-btn ${isSelected ? 'selected' : ''}" data-ticker="${item.Ticker}">
+                ${isSelected ? '✓' : ''}
             </button>
-        </td>
+        </div>
+
+        <div class="card-header">
+            <div class="ticker-info">
+                <div class="ticker-symbol">
+                    <div class="ticker-badge-small">${initial}</div>
+                    ${item.Ticker}
+                </div>
+                <div class="sector-pill">${item.Sector || '-'}</div>
+            </div>
+             <!-- In refined data, we might not have price readily available in the same format depending on the refined object, checking data structure -->
+             <!-- Assuming similar structure or omitting price if missing -->
+        </div>
+        
+        <div class="card-metrics">
+            <div class="metric-item">
+                <span class="metric-title">ROIC</span>
+                <span class="metric-value" style="${roicClass}">${formatPercent(item.ROIC, 1)}</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">Piotroski</span>
+                <span class="metric-value highlight">${item.Piotroski || '-'}/9</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">Old MOS</span>
+                <span class="metric-value">${formatPercent(item.Old_MOS, 1)}</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">Real MOS</span>
+                <span class="metric-value" style="${mosClass}">${formatPercent(item.Real_MOS, 1)}</span>
+            </div>
+        </div>
+
+        <div class="card-reason">
+            ${item.Why || 'Sin notas adicionales.'}
+        </div>
     `;
 
-    const selectBtn = tr.querySelector('.select-ticker-btn');
+    // Add click handler to the whole card or just the button
+    const selectBtn = card.querySelector('.select-card-btn');
+    // Also allow clicking the card itself to select, but prevent double triggering if clicking button
+    card.addEventListener('click', (e) => {
+        // If we clicked the button directly, the button handler will fire. 
+        // If we clicked the card (but not the button), we can also trigger toggle.
+        // Let's keep it simple: Click the button to toggle.
+    });
+
     selectBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleTickerSelection(item.Ticker, selectBtn);
     });
 
-    return tr;
+    return card;
 }
 
-// Add button styles dynamically
-const style = document.createElement('style');
-style.textContent = `
-    .select-ticker-btn {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        border: 1px solid var(--primary);
-        background: transparent;
-        color: var(--primary);
-        cursor: pointer;
-        font-size: 1.125rem;
-        font-weight: bold;
-        transition: all 0.2s ease;
-    }
-    .select-ticker-btn:hover {
-        background: rgba(0, 255, 136, 0.1);
-    }
-    .select-ticker-btn.selected {
-        background: var(--primary);
-        color: var(--bg-primary);
-    }
-`;
-document.head.appendChild(style);
-
+// Remove old button styles logic since we moved it to CSS file
+// But we need to update toggleTickerSelection to work with the new button logic/styles
 function toggleTickerSelection(ticker, buttonElement) {
     if (appState.selectedTickers.has(ticker)) {
         appState.selectedTickers.delete(ticker);
         buttonElement.classList.remove('selected');
-        buttonElement.textContent = '+';
+        buttonElement.textContent = '';
     } else {
         appState.selectedTickers.add(ticker);
         buttonElement.classList.add('selected');
@@ -631,41 +617,72 @@ function renderResultsStage3(data) {
     document.getElementById('initialCapitalDisplay').textContent = formatCurrency(metrics.valor_inicial);
     document.getElementById('currentValue').textContent = formatCurrency(metrics.valor_actual);
 
-    // Render ticker analysis table
-    const tbody = document.querySelector('#tickerAnalysisTable tbody');
-    tbody.innerHTML = '';
+    // Render ticker analysis cards
+    const container = document.getElementById('portfolioGrid');
+    container.innerHTML = '';
 
     if (data.analysis.ticker_analysis && data.analysis.ticker_analysis.detalle_por_accion) {
         data.analysis.ticker_analysis.detalle_por_accion.forEach(ticker => {
-            const row = createAnalysisTableRow(ticker);
-            tbody.appendChild(row);
+            const card = createPortfolioCard(ticker);
+            container.appendChild(card);
         });
     }
 }
 
-function createAnalysisTableRow(ticker) {
-    const tr = document.createElement('tr');
+function createPortfolioCard(ticker) {
+    const card = document.createElement('div');
+    card.className = 'stock-card';
 
-    const contributionClass = (ticker.contribucion_retorno_pct || 0) >= 0 ? 'positive' : 'negative';
-    const returnClass = (ticker.retorno_pct || 0) >= 0 ? 'positive' : 'negative';
+    const contributionClass = (ticker.contribucion_retorno_pct || 0) >= 0 ? 'color: var(--primary);' : 'color: #ef4444;';
+    const returnClass = (ticker.retorno_pct || 0) >= 0 ? 'color: var(--primary);' : 'color: #ef4444;';
+    const initial = getTickerInitial(ticker.ticker);
 
-    tr.innerHTML = `
-        <td>
-            <div style="display: flex; align-items: center;">
-                <span class="ticker-badge">${getTickerInitial(ticker.ticker)}</span>
-                <strong>${ticker.ticker || '-'}</strong>
+    card.innerHTML = `
+        <div class="card-header">
+            <div class="ticker-info">
+                <div class="ticker-symbol">
+                    <div class="ticker-badge-small">${initial}</div>
+                    ${ticker.ticker || '-'}
+                </div>
             </div>
-        </td>
-        <td>${formatCurrency(ticker.capital_inicial)}</td>
-        <td class="${contributionClass}">${formatPercent(ticker.contribucion_retorno_pct / 100)}</td>
-        <td class="${contributionClass}">${formatCurrency(ticker.ganancia_perdida)}</td>
-        <td>${formatPercent(ticker.peso_portfolio / 100, 1)}</td>
-        <td class="${returnClass}">${formatPercent(ticker.retorno_pct / 100)}</td>
-        <td>${formatCurrency(ticker.valor_actual)}</td>
-        <td>${formatPercent(ticker.volatilidad_anual_pct / 100)}</td>
+            <div class="price-info">
+                <span class="price-current">${formatCurrency(ticker.valor_actual)}</span>
+                <span style="font-size: 0.75rem; color: var(--text-secondary); display: block;">Valor Actual</span>
+            </div>
+        </div>
+        
+        <div class="card-metrics">
+            <div class="metric-item">
+                <span class="metric-title">Retorno</span>
+                <span class="metric-value" style="${returnClass}">${formatPercent(ticker.retorno_pct / 100)}</span>
+            </div>
+             <div class="metric-item">
+                <span class="metric-title">Contribución</span>
+                <span class="metric-value" style="${contributionClass}">${formatPercent(ticker.contribucion_retorno_pct / 100)}</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">Ganancia/Pérdida</span>
+                <span class="metric-value" style="${contributionClass}">${formatCurrency(ticker.ganancia_perdida)}</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-title">Peso</span>
+                <span class="metric-value">${formatPercent(ticker.peso_portfolio / 100, 1)}</span>
+            </div>
+        </div>
+
+        <div class="card-footer" style="padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+            <div class="metric-item" style="align-items: flex-start;">
+                <span class="metric-title">Capital Inicial</span>
+                <span class="metric-value" style="font-size: 0.9rem;">${formatCurrency(ticker.capital_inicial)}</span>
+            </div>
+             <div class="metric-item" style="align-items: flex-end;">
+                <span class="metric-title">Volatilidad</span>
+                <span class="metric-value" style="font-size: 0.9rem;">${formatPercent(ticker.volatilidad_anual_pct / 100)}</span>
+            </div>
+        </div>
     `;
 
-    return tr;
+    return card;
 }
 
 function initResultsScreen3() {
