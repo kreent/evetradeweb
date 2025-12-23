@@ -16,8 +16,13 @@ const appState = {
 // ================================================================
 // API Configuration
 // ================================================================
-// Use proxy server to avoid CORS issues
-const API_BASE = 'http://localhost:3001';
+// Auto-detect if we're in development (localhost) or production
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// In development, use proxy to avoid CORS. In production, use direct API
+const API_BASE = isDevelopment
+    ? 'http://localhost:3001'  // Local proxy server
+    : 'https://bulletproofuniverse-281506149568.europe-west1.run.app';  // Production API
 
 const API_ENDPOINTS = {
     analyze: `${API_BASE}/analyze`,
