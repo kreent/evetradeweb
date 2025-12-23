@@ -8,7 +8,7 @@ const appState = {
     selectedTickers: new Set(),
     portfolioData: null,
     formData: {
-        start_date: '',
+        start_date: '01/01/2024',
         initial_capital: 10000
     }
 };
@@ -610,7 +610,8 @@ function renderResultsStage3(data) {
     document.getElementById('volatility').textContent = formatPercent(metrics.volatilidad_anual_pct / 100);
     document.getElementById('daysInvested').textContent = metrics.dias_invertidos || '-';
     document.getElementById('currentDate').textContent = metrics.fecha_actual || '-';
-    document.getElementById('startDateDisplay').textContent = data.start_date || '-';
+    // Ensure we display the user-provided start date or the one returned by API
+    document.getElementById('startDateDisplay').textContent = data.start_date || document.getElementById('startDate').value || '-';
     document.getElementById('maxDrawdown').textContent = formatPercent(metrics.max_drawdown_pct / 100);
     document.getElementById('totalReturn').textContent = formatPercent(metrics.retorno_total_pct / 100);
     document.getElementById('sharpeRatio').textContent = formatNumber(metrics.sharpe_ratio);
@@ -694,6 +695,17 @@ function initResultsScreen3() {
         appState.selectedTickers.clear();
         appState.portfolioData = null;
 
+        // Reset form inputs
+        document.getElementById('startDate').value = '2024-01-01';
+        document.getElementById('initialCapital').value = '10000';
+
+        // Reset selections visual state
+        document.querySelectorAll('.select-card-btn').forEach(btn => {
+            btn.classList.remove('selected');
+            btn.textContent = '';
+        });
+        updateSelectionCart();
+
         navigateToScreen('homeScreen');
     });
 }
@@ -707,11 +719,8 @@ function init() {
     initResultsScreen2();
     initResultsScreen3();
 
-    // Set default date to 6 months ago
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-    const defaultDate = sixMonthsAgo.toISOString().split('T')[0];
-    document.getElementById('startDate').value = defaultDate;
+    // Set default date to 01/01/2024 as requested
+    document.getElementById('startDate').value = '2024-01-01';
 }
 
 // Start the app when DOM is ready
