@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EveTrade - Screener Automático de Inversión Inteligente">
+    <title>EveTrade - Screener Automático de Inversión</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+
+
+    <!-- Home Screen -->
+    <div id="homeScreen" class="screen active">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Eve
+                    <span class="text-accent">Trade</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Analiza miles de acciones y ETFs en segundos. Filtra el ruido del mercado con estrategias de Value,
+                    Momentum y Fundamentales.
+                </p>
+
+                <button id="startBtn" class="cta-button">
+                    <span>Ejecutar Script</span>
+                </button>
+
+                <div class="stats-row-home">
+                    <div class="stat-item">
+                        <span class="stat-number">8,000+</span>
+                        <span class="stat-label">Activos Analizados</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">20ms</span>
+                        <span class="stat-label">Tiempo de Ejecución</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">Métricas Combinadas</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Monitoreo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loader Screen -->
+    <div id="loaderScreen" class="screen">
+        <div class="container">
+            <div class="loader-content">
+                <div class="circular-progress">
+                    <svg class="progress-ring" width="200" height="200">
+                        <circle class="progress-ring-circle" cx="100" cy="100" r="90" />
+                        <circle class="progress-ring-progress" cx="100" cy="100" r="90" />
+                    </svg>
+                    <div class="progress-text">
+                        <span id="progressPercent">0%</span>
+                        <span class="progress-label">ESCANEANDO</span>
+                    </div>
+                </div>
+
+                <h2>Analizando el Mercado</h2>
+                <p class="results-subtitle">
+                    Por favor espere, nuestro algoritmo está buscando las mejores oportunidades entre miles de activos.
+                </p>
+
+                <div class="progress-steps">
+                    <h3 style="margin-bottom: 1rem;">Progreso del Análisis</h3>
+                    <div class="progress-step">
+                        <span class="step-text">Conectando con API de Bolsa</span>
+                        <span class="step-time">120ms</span>
+                    </div>
+                    <div class="progress-step">
+                        <span class="step-text">Filtrando por volumen mínimo</span>
+                        <span class="step-time">850ms</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen Stage 1 -->
+    <div id="resultsScreen1" class="screen">
+        <div class="container">
+            <div class="results-header">
+                <p style="color: var(--primary); font-size: 0.875rem; margin-bottom: 0.5rem;">⚡ ANÁLISIS FUNDAMENTAL</p>
+                <h1>Resultados del Screener</h1>
+                <p class="results-subtitle">
+                    Se encontraron <strong id="candidatesCount">-</strong> tickers que coinciden con sus criterios de
+                    alta calidad y subvaluación.
+                </p>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-label">UNDERVALUED</span>
+                        <span class="stat-value" id="totalAnalyzed">-</span>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <button id="refineBtn" class="cta-button">
+                    <span>Refinar Búsqueda</span>
+                </button>
+            </div>
+            <div class="data-table">
+                <table id="resultsTable">
+                    <thead>
+                        <tr>
+                            <th>TICKER</th>
+                            <th>PRICE</th>
+                            <th>SECTOR</th>
+                            <th>ROIC</th>
+                            <th>PIOTROSKI</th>
+                            <th>GROWTH EST.</th>
+                            <th>INTRINSIC</th>
+                            <th>MOS</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- Results Screen Stage 2 -->
+    <div id="resultsScreen2" class="screen">
+        <div class="container">
+            <!-- Selection Cart -->
+            <div id="selectionCart" class="selection-cart" style="display: none;">
+                <div class="cart-header">
+                    <h3>Tu Selección (<span id="selectedCount">0</span>)</h3>
+                    <button id="clearSelection" class="text-button">Limpiar todo</button>
+                </div>
+                <div id="selectedTickersList" class="selected-tickers-list"></div>
+
+                <form id="followForm" class="follow-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate">Fecha Inicial</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="initialCapital">Inversión Inicial ($)</label>
+                            <input type="number" id="initialCapital" value="10000" min="1" step="0.01" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="cta-button">
+                        <span>Generar Proyección</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="results-header">
+                <p style="color: var(--primary); font-size: 0.875rem; margin-bottom: 0.5rem;">RESULTADOS REFINADOS
+                </p>
+                <h1>Categorías de Activos</h1>
+                <p class="results-subtitle">
+                    Hemos filtrado y categorizado los candidatos para tu proyección. Selecciona los mejores activos
+                    abajo para agregar.
+                </p>
+            </div>
+
+            <div id="categoriesContainer"></div>
+        </div>
+    </div>
+
+    <!-- Results Screen Stage 3 -->
+    <div id="resultsScreen3" class="screen">
+        <div class="container">
+            <div class="results-header">
+                <p style="color: var(--primary); font-size: 0.875rem; margin-bottom: 0.5rem;">ANÁLISIS DE PORTAFOLIO
+                </p>
+                <h1>Resultados del Seguimiento</h1>
+                <p class="results-subtitle">Métricas de rendimiento de tu portafolio desde <span
+                        id="startDateDisplay">-</span></p>
+            </div>
+
+            <div class="portfolio-metrics">
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <span class="metric-label">CAGR</span>
+                        <span class="metric-value" id="cagr">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Volatilidad Anual</span>
+                        <span class="metric-value" id="volatility">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Días Invertidos</span>
+                        <span class="metric-value" id="daysInvested">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Fecha Actual</span>
+                        <span class="metric-value" id="currentDate">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Pérdida Máxima</span>
+                        <span class="metric-value negative" id="maxDrawdown">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Retorno Total</span>
+                        <span class="metric-value" id="totalReturn">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Sharpe Ratio</span>
+                        <span class="metric-value" id="sharpeRatio">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Capital Inicial</span>
+                        <span class="metric-value" id="initialCapitalDisplay">-</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-label">Valor Actual</span>
+                        <span class="metric-value" id="currentValue">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ticker-analysis">
+                <h2>Detalle por Acción</h2>
+                <div class="data-table">
+                    <table id="tickerAnalysisTable">
+                        <thead>
+                            <tr>
+                                <th>TICKER</th>
+                                <th>CAPITAL INICIAL</th>
+                                <th>CONTRIBUCIÓN %</th>
+                                <th>GANANCIA/PÉRDIDA</th>
+                                <th>PESO PORTFOLIO</th>
+                                <th>RETORNO %</th>
+                                <th>VALOR ACTUAL</th>
+                                <th>VOLATILIDAD</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem;">
+                <button id="startOverBtn" class="cta-button secondary">
+                    <span>Nuevo Análisis</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
