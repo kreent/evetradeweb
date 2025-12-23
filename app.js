@@ -16,8 +16,13 @@ const appState = {
 // ================================================================
 // API Configuration
 // ================================================================
-// Use proxy server to avoid CORS issues
-const API_BASE = 'https://bulletproofuniverse-281506149568.europe-west1.run.app';
+// Auto-detect if we're in development (localhost) or production
+const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+// In development, use local proxy. In production, use Netlify Function proxy
+const API_BASE = isDevelopment
+    ? 'http://localhost:3001'
+    : '/api'; // This maps to the Netlify Function via netlify.toml
 
 const API_ENDPOINTS = {
     analyze: `${API_BASE}/analyze`,
