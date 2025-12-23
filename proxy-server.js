@@ -64,9 +64,9 @@ const server = http.createServer((req, res) => {
     });
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-    console.log(`\n🚀 Proxy server running on http://localhost:${PORT}`);
+    console.log(`\n🚀 Proxy server running on port ${PORT}`);
     console.log(`📡 Forwarding requests to: ${API_BASE}`);
-    console.log(`\n💡 Update your app.js API_BASE to: 'http://localhost:${PORT}'\n`);
+    console.log(`\n💡 CORS enabled for all origins\n`);
 });

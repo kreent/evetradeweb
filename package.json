@@ -1,0 +1,18 @@
+{
+    "name": "evetrade-proxy",
+    "version": "1.0.0",
+    "description": "CORS proxy for EveTrade API",
+    "main": "proxy-server.js",
+    "scripts": {
+        "start": "node proxy-server.js"
+    },
+    "keywords": [
+        "proxy",
+        "cors"
+    ],
+    "author": "",
+    "license": "MIT",
+    "engines": {
+        "node": ">=14.0.0"
+    }
+}
