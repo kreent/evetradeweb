@@ -621,10 +621,40 @@ function renderResultsStage3(data) {
     container.innerHTML = '';
 
     if (data.analysis.ticker_analysis && data.analysis.ticker_analysis.detalle_por_accion) {
-        data.analysis.ticker_analysis.detalle_por_accion.forEach(ticker => {
-            const card = createPortfolioCard(ticker);
-            container.appendChild(card);
-        });
+        const tickers = data.analysis.ticker_analysis.detalle_por_accion;
+
+        const positiveReturns = tickers.filter(t => (t.retorno_pct || 0) >= 0);
+        const negativeReturns = tickers.filter(t => (t.retorno_pct || 0) < 0);
+
+        // Sort by return value magnitude (descending for winners, ascending (most negative first) for losers)
+        positiveReturns.sort((a, b) => (b.retorno_pct || 0) - (a.retorno_pct || 0));
+        negativeReturns.sort((a, b) => (a.retorno_pct || 0) - (b.retorno_pct || 0));
+
+        // Render Positive Section
+        if (positiveReturns.length > 0) {
+            const positiveHeader = document.createElement('div');
+            positiveHeader.style.gridColumn = '1 / -1';
+            positiveHeader.innerHTML = `<h3 style="color: var(--primary); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(74, 222, 128, 0.2); padding-bottom: 0.5rem;">🚀 Ganadores (${positiveReturns.length})</h3>`;
+            container.appendChild(positiveHeader);
+
+            positiveReturns.forEach(ticker => {
+                const card = createPortfolioCard(ticker);
+                container.appendChild(card);
+            });
+        }
+
+        // Render Negative Section
+        if (negativeReturns.length > 0) {
+            const negativeHeader = document.createElement('div');
+            negativeHeader.style.gridColumn = '1 / -1';
+            negativeHeader.innerHTML = `<h3 style="color: #ef4444; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 0.5rem;">🔻 En Riesgo (${negativeReturns.length})</h3>`;
+            container.appendChild(negativeHeader);
+
+            negativeReturns.forEach(ticker => {
+                const card = createPortfolioCard(ticker);
+                container.appendChild(card);
+            });
+        }
     }
 }
 
