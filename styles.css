@@ -597,8 +597,7 @@ tbody {
 
 /* Selection Cart */
 .selection-cart {
-      background: #0a3441;
-    position: sticky;
+    background: #0a3441;
     top: 80px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
