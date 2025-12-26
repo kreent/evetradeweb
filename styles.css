@@ -597,16 +597,14 @@ tbody {
 
 /* Selection Cart */
 .selection-cart {
-    background: #0a3441;
-    position: fixed;
-    top: 0px;
+      background: #0a3441;
+    position: sticky;
+    top: 80px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
     z-index: 100;
-    left: 0;
-    width: 275px;
 }
 
 .cart-header {
@@ -614,7 +612,6 @@ tbody {
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--spacing-md);
-    flex-direction: column;
 }
 
 .selected-tickers-list {
