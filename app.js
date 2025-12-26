@@ -603,20 +603,18 @@ function initResultsScreen2() {
 function renderResultsStage3(data) {
     if (!data.analysis) return;
 
-    const metrics = data.analysis.portfolio_metrics;
+    // const metrics = data.analysis.portfolio_metrics; // Metrics section removed
+
+    console.log('Rendering Results Stage 3');
+
+    // Ensure we display the user-provided start date or the one returned by API
+    const startDateDisplay = document.getElementById('startDateDisplay');
+    if (startDateDisplay) {
+        startDateDisplay.textContent = data.start_date || document.getElementById('startDate').value || '-';
+    }
 
     // Update portfolio metrics
-    document.getElementById('cagr').textContent = formatPercent(metrics.cagr_pct / 100);
-    document.getElementById('volatility').textContent = formatPercent(metrics.volatilidad_anual_pct / 100);
-    document.getElementById('daysInvested').textContent = metrics.dias_invertidos || '-';
-    document.getElementById('currentDate').textContent = metrics.fecha_actual || '-';
-    // Ensure we display the user-provided start date or the one returned by API
-    document.getElementById('startDateDisplay').textContent = data.start_date || document.getElementById('startDate').value || '-';
-    document.getElementById('maxDrawdown').textContent = formatPercent(metrics.max_drawdown_pct / 100);
-    document.getElementById('totalReturn').textContent = formatPercent(metrics.retorno_total_pct / 100);
-    document.getElementById('sharpeRatio').textContent = formatNumber(metrics.sharpe_ratio);
-    document.getElementById('initialCapitalDisplay').textContent = formatCurrency(metrics.valor_inicial);
-    document.getElementById('currentValue').textContent = formatCurrency(metrics.valor_actual);
+
 
     // Render ticker analysis cards
     const container = document.getElementById('portfolioGrid');
