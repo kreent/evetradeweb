@@ -18,18 +18,19 @@
 </head>
 
 <body>
-
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
 
 
     <!-- Home Screen -->
     <div id="homeScreen" class="screen active">
         <div class="container">
             <div class="hero-content">
-                          <img src="logo.png" alt="Home Background" class="home-background" style="
+                <img src="logo.png" alt="Home Background" class="home-background" style="
     width: 23em;
     margin-bottom: 3em;
-                              max-width: 100%;
 ">
+
                 <p class="hero-subtitle">
                     Analiza miles de acciones y ETFs en segundos. Filtra el ruido del mercado con estrategias de Value,
                     Momentum y Fundamentales.
@@ -130,7 +131,9 @@
     <!-- Results Screen Stage 2 -->
     <div id="resultsScreen2" class="screen">
         <div class="container">
-           
+            <!-- Selection Cart -->
+
+
             <div class="results-header">
                 <p style="color: var(--primary); font-size: 0.875rem; margin-bottom: 0.5rem;">RESULTADOS REFINADOS
                 </p>
@@ -140,7 +143,6 @@
                     abajo para agregar.
                 </p>
             </div>
- <!-- Selection Cart -->
             <div id="selectionCart" class="selection-cart" style="display: none;">
                 <div class="cart-header">
                     <h3>Tu Selección (<span id="selectedCount">0</span>)</h3>
@@ -164,7 +166,6 @@
                     </button>
                 </form>
             </div>
-
             <div id="categoriesContainer"></div>
         </div>
     </div>
@@ -198,6 +199,69 @@
     </div>
 
     <script type="module" src="app.js?v=2"></script>
+
+    <!-- Particles.js Library -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Initialize Particles.js
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: {
+                            value: 120,
+                            density: { enable: true, value_area: 800 }
+                        },
+                        color: { value: '#00f5ff' },
+                        shape: {
+                            type: 'circle',
+                            stroke: { width: 0.5, color: '#0096c7' }
+                        },
+                        opacity: {
+                            value: 0.6,
+                            random: true,
+                            anim: { enable: true, speed: 1, opacity_min: 0.2 }
+                        },
+                        size: {
+                            value: 3,
+                            random: true,
+                            anim: { enable: true, speed: 2, size_min: 0.5 }
+                        },
+                        line_linked: {
+                            enable: true,
+                            distance: 150,
+                            color: '#00d9ff',
+                            opacity: 0.35,
+                            width: 1
+                        },
+                        move: {
+                            enable: true,
+                            speed: 1.5,
+                            direction: 'none',
+                            random: true,
+                            straight: false,
+                            out_mode: 'bounce',
+                            bounce: true
+                        }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: {
+                            onhover: { enable: true, mode: 'grab' },
+                            onclick: { enable: true, mode: 'push' },
+                            resize: true
+                        },
+                        modes: {
+                            grab: { distance: 200, line_linked: { opacity: 0.7 } },
+                            push: { particles_nb: 4 },
+                            repulse: { distance: 150, duration: 0.4 }
+                        }
+                    },
+                    retina_detect: true
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

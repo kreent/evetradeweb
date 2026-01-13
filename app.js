@@ -746,9 +746,28 @@ function init() {
     initResultsScreen1();
     initResultsScreen2();
     initResultsScreen3();
+    initHoverGlow();
 
     // Set default date to 01/01/2024 as requested
     document.getElementById('startDate').value = '2024-01-01';
+}
+
+// ================================================================
+// Interaction Effects
+// ================================================================
+function initHoverGlow() {
+    // We use event delegation to handle all buttons, including those that might be dynamic
+    document.addEventListener('mousemove', (e) => {
+        const button = e.target.closest('.cta-button');
+        if (button) {
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            button.style.setProperty('--glow-x', `${x}px`);
+            button.style.setProperty('--glow-y', `${y}px`);
+        }
+    });
 }
 
 // Start the app when DOM is ready
