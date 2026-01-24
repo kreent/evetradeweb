@@ -889,7 +889,7 @@ tbody {
 }
 
 .stock-card:hover {
-    background: rgba(16, 185, 129, 0.1);
+    background: rgb(0 36 70);
     border-color: var(--primary);
     transform: translateY(-5px);
     box-shadow: 0 10px 30px -10px rgba(0, 255, 136, 0.3);
