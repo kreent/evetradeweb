@@ -514,6 +514,9 @@ tbody {
 /* Results Header */
 .results-header {
     margin-bottom: var(--spacing-xl);
+    background: #001b38;
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .results-header h1 {
