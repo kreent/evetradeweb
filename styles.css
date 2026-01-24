@@ -286,7 +286,7 @@ tbody {
 
 .market-card {
     position: relative;
-    background: linear-gradient(145deg, rgba(21, 57, 92, 0.4) 0%, rgba(13, 23, 38, 0.6) 100%);
+    background: linear-gradient(145deg, rgba(21, 57, 92, 0.4) 0%, rgb(0 11 26) 100%);
     border: 1px solid rgba(68, 183, 223, 0.2);
     border-radius: var(--radius-lg);
     padding: 2.5rem;
