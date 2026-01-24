@@ -8,7 +8,7 @@ const appState = {
     selectedTickers: new Set(),
     portfolioData: null,
     formData: {
-        start_date: '01/01/2024',
+        start_date: '01/01/2026',
         initial_capital: 10000
     }
 };
@@ -28,6 +28,24 @@ const API_ENDPOINTS = {
     analyze: `${API_BASE}/analyze`,
     refine: `${API_BASE}/refine`,
     follow: `${API_BASE}/follow`
+};
+
+// ================================================================
+// Metric Information Data
+// ================================================================
+const METRIC_INFO = {
+    'Piotroski': 'Salud financiera (0-9). >7 es excelente, <4 es débil.',
+    'MOS': 'Margen de Seguridad: Descuento del precio vs valor real estimado.',
+    'ROIC': 'Retorno sobre Capital: Qué tan bien genera ganancias el negocio.',
+    'OLD_MOS': 'MOS Histórico para comparar la evolución de la oportunidad.',
+    'Growth_Est': 'Crecimiento anual compuesto esperado para los próximos 5 años.',
+    'FCF_Yield': 'Caja libre generada relativa al valor de mercado de la empresa.',
+    'Retorno': 'Rendimiento porcentual total acumulado desde la fecha inicial.',
+    'Contribución': 'Impacto real de este activo en el rendimiento de tu portafolio.',
+    'Peso': 'Porcentaje que representa este activo del total de tu capital.',
+    'Ganancia': 'Monto total ganado o perdido en dólares con esta posición.',
+    'Capital_Inicial': 'Monto invertido originalmente en este activo.',
+    'Volatilidad': 'Variabilidad del precio. >30% indica riesgo elevado.'
 };
 
 // ================================================================
@@ -209,6 +227,8 @@ function getTickerInitial(ticker) {
 }
 
 // ================================================================
+
+// ================================================================
 // Home Screen Handlers
 // ================================================================
 function initHomeScreen() {
@@ -238,8 +258,8 @@ function initHomeScreen() {
 // ================================================================
 function renderResultsStage1(data) {
     // Update stats
-    document.getElementById('totalAnalyzed').textContent = data.total_analyzed || '-';
-    document.getElementById('candidatesCount').textContent = data.candidates_count || '-';
+    const candidatesEl = document.getElementById('candidatesCount');
+    if (candidatesEl) candidatesEl.textContent = data.candidates_count || '-';
 
     // Render cards
     const container = document.getElementById('resultsGrid');
@@ -278,19 +298,19 @@ function createStockCard(stock) {
         
         <div class="card-metrics">
             <div class="metric-item">
-                <span class="metric-title">ROIC</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['ROIC']}">ROIC</span>
                 <span class="metric-value" style="${roicClass}">${formatPercent(stock.ROIC, 1)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title">Piotroski</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['Piotroski']}">Piotroski</span>
                 <span class="metric-value highlight">${stock.Piotroski}/9</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title">Growth</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['Growth_Est']}">Growth</span>
                 <span class="metric-value">${formatPercent(stock.Growth_Est, 1)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title">MOS</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['MOS']}">MOS</span>
                 <span class="metric-value" style="${mosClass}">${formatPercent(stock.MOS, 1)}</span>
             </div>
         </div>
@@ -306,6 +326,7 @@ function createStockCard(stock) {
             </div>
         </div>
     `;
+
 
     return card;
 }
@@ -353,26 +374,38 @@ function renderResultsStage2(data) {
 
     // Category configuration
     const categoryConfig = {
-        '✅ Oportunidad': { title: 'Oportunidades', icon: '✅', badge: 'Top Pick', priority: 1 },
-        '💎 Gema': { title: 'Gemas Escondidas', icon: '💎', badge: 'Hidden Gems', priority: 2 },
-        '⚖️ Precio Justo': { title: 'Precio Justo', icon: '⚖️', badge: 'Fair Value', priority: 3 },
-        '🏦 Banco/Seguro': { title: 'Bancos / Seguros', icon: '🏦', badge: 'Financials', priority: 4 },
-        '⚠️ Trampa Valor?': { title: 'Posibles Trampas de Valor', icon: '⚠️', badge: 'Caution', priority: 5 },
-        '⚠️ Trampa Valor': { title: 'Trampas de Valor', icon: '⚠️', badge: 'Warning', priority: 6 },
-        '❌ Cara/Ajustada': { title: 'Sobrevaloradas', icon: '❌', badge: 'Overpriced', priority: 7 }
+        'Oportunidad': {
+            title: 'Oportunidad',
+            icon: `<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#44b7df"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480v320q0 33-23.5 56.5T800-80H480Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 23 3 45t9 43l148-148 132 111 131-131h-63v-80h200v200h-80v-63L456-320 325-432 207-314q42 69 113.5 111.5T480-160Zm300 20q17 0 28.5-11.5T820-180q0-17-11.5-28.5T780-220q-17 0-28.5 11.5T740-180q0 17 11.5 28.5T780-140ZM455-480Z"/></svg>`,
+            badge: 'Top Pick', priority: 1
+        },
+        '💎 JOYA': {
+            title: 'Joya',
+            icon: `<svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#44b7df"><path d="M480-120 80-600l120-240h560l120 240-400 480Zm-95-520h190l-60-120h-70l-60 120Zm55 347v-267H218l222 267Zm80 0 222-267H520v267Zm144-347h106l-60-120H604l60 120Zm-474 0h106l60-120H250l-60 120Z"/></svg>`,
+            badge: 'Hidden Gems', priority: 2
+        },
+        'Precio Justo': { title: 'PRECIO JUSTO', icon: '⚖️', badge: 'Fair Value', priority: 3 },
+        'Banco/Seguro': { title: 'BANCOS / SEGUROS', icon: '🏦', badge: 'Financials', priority: 4 },
+        'Trampa': { title: 'POSIBLES TRAMPAS', icon: '⚠️', badge: 'Caution', priority: 5 },
+        'Sobrevaloradas': { title: 'SOBREVALORADAS', icon: '❌', badge: 'Overpriced', priority: 7 }
     };
 
     // Sort categories
     const sortedCategories = Object.keys(groupedByCategory).sort((a, b) => {
-        const priorityA = categoryConfig[a]?.priority || 999;
-        const priorityB = categoryConfig[b]?.priority || 999;
+        const findConfig = (k) => {
+            const key = Object.keys(categoryConfig).find(ck => k.includes(ck)) || k;
+            return categoryConfig[key];
+        };
+        const priorityA = findConfig(a)?.priority || 999;
+        const priorityB = findConfig(b)?.priority || 999;
         return priorityA - priorityB;
     });
 
     // Create sections
     sortedCategories.forEach(catKey => {
         const items = groupedByCategory[catKey];
-        const config = categoryConfig[catKey] || { title: catKey, icon: '📊', badge: catKey, priority: 999 };
+        const configKey = Object.keys(categoryConfig).find(ck => catKey.includes(ck)) || catKey;
+        const config = categoryConfig[configKey] || { title: catKey, icon: '📊', badge: catKey, priority: 999 };
 
         const categoryData = {
             key: catKey,
@@ -401,7 +434,7 @@ function createCategorySection(category, items) {
         <div class="category-header">
             <span class="category-icon">${category.icon}</span>
             <h2 class="category-title">${category.title}</h2>
-            <span class="category-badge">${category.badge}</span>
+            <span class="category-badge">${category.count} acciones</span>
         </div>
         <div class="cards-grid">
             <!-- Cards injected here -->
@@ -448,19 +481,19 @@ function createRefinedStockCard(item) {
         
         <div class="card-metrics">
             <div class="metric-item">
-                <span class="metric-title">ROIC</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['ROIC']}">ROIC</span>
                 <span class="metric-value" style="${roicClass}">${formatPercent(item.ROIC, 1)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title">Piotroski</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['Piotroski']}">Piotroski</span>
                 <span class="metric-value highlight">${item.Piotroski || '-'}/9</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title">Old MOS</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['OLD_MOS']}">Old MOS</span>
                 <span class="metric-value">${formatPercent(item.Old_MOS, 1)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title">Real MOS</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['MOS']}">Real MOS</span>
                 <span class="metric-value" style="${mosClass}">${formatPercent(item.Real_MOS, 1)}</span>
             </div>
         </div>
@@ -483,6 +516,7 @@ function createRefinedStockCard(item) {
         e.stopPropagation();
         toggleTickerSelection(item.Ticker, selectBtn);
     });
+
 
     return card;
 }
@@ -634,7 +668,7 @@ function renderResultsStage3(data) {
         if (positiveReturns.length > 0) {
             const positiveHeader = document.createElement('div');
             positiveHeader.style.gridColumn = '1 / -1';
-            positiveHeader.innerHTML = `<h3 style="color: var(--primary); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(74, 222, 128, 0.2); padding-bottom: 0.5rem;">🚀 Ganadores (${positiveReturns.length})</h3>`;
+            positiveHeader.innerHTML = `<h3 style="color: var(--primary); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(74, 222, 128, 0.2); padding-bottom: 0.5rem;">Ganadores (${positiveReturns.length})</h3>`;
             container.appendChild(positiveHeader);
 
             positiveReturns.forEach(ticker => {
@@ -647,7 +681,7 @@ function renderResultsStage3(data) {
         if (negativeReturns.length > 0) {
             const negativeHeader = document.createElement('div');
             negativeHeader.style.gridColumn = '1 / -1';
-            negativeHeader.innerHTML = `<h3 style="color: #ef4444; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 0.5rem;">🔻 En Riesgo (${negativeReturns.length})</h3>`;
+            negativeHeader.innerHTML = `<h3 style="color: #ef4444; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 0.5rem;">En Riesgo (${negativeReturns.length})</h3>`;
             container.appendChild(negativeHeader);
 
             negativeReturns.forEach(ticker => {
@@ -682,34 +716,35 @@ function createPortfolioCard(ticker) {
         
         <div class="card-metrics">
             <div class="metric-item">
-                <span class="metric-title">Retorno</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['Retorno']}">Retorno</span>
                 <span class="metric-value" style="${returnClass}">${formatPercent(ticker.retorno_pct / 100)}</span>
             </div>
              <div class="metric-item">
-                <span class="metric-title">Contribución</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['Contribución']}">Contribución</span>
                 <span class="metric-value" style="${contributionClass}">${formatPercent(ticker.contribucion_retorno_pct / 100)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title">Ganancia/Pérdida</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['Ganancia']}">Ganancia/Pérdida</span>
                 <span class="metric-value" style="${contributionClass}">${formatCurrency(ticker.ganancia_perdida)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title">Peso</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['Peso']}">Peso</span>
                 <span class="metric-value">${formatPercent(ticker.peso_portfolio / 100, 1)}</span>
             </div>
         </div>
 
         <div class="card-footer" style="padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
             <div class="metric-item" style="align-items: flex-start;">
-                <span class="metric-title">Capital Inicial</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['Capital_Inicial']}">Capital Inicial</span>
                 <span class="metric-value" style="font-size: 0.9rem;">${formatCurrency(ticker.capital_inicial)}</span>
             </div>
              <div class="metric-item" style="align-items: flex-end;">
-                <span class="metric-title">Volatilidad</span>
+                <span class="metric-title" data-tooltip="${METRIC_INFO['Volatilidad']}">Volatilidad</span>
                 <span class="metric-value" style="font-size: 0.9rem;">${formatPercent(ticker.volatilidad_anual_pct / 100)}</span>
             </div>
         </div>
     `;
+
 
     return card;
 }
@@ -724,7 +759,7 @@ function initResultsScreen3() {
         appState.portfolioData = null;
 
         // Reset form inputs
-        document.getElementById('startDate').value = '2024-01-01';
+        document.getElementById('startDate').value = '2026-01-01';
         document.getElementById('initialCapital').value = '10000';
 
         // Reset selections visual state
@@ -749,7 +784,7 @@ function init() {
     initHoverGlow();
 
     // Set default date to 01/01/2024 as requested
-    document.getElementById('startDate').value = '2024-01-01';
+    document.getElementById('startDate').value = '2026-01-01';
 }
 
 // ================================================================
