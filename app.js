@@ -232,24 +232,29 @@ function getTickerInitial(ticker) {
 // Home Screen Handlers
 // ================================================================
 function initHomeScreen() {
-    const startBtn = document.getElementById('startBtn');
-    startBtn.addEventListener('click', async () => {
-        navigateToScreen('loaderScreen');
-        startCircularProgress();
+    document.querySelectorAll('.explorer-trigger').forEach(trigger => {
+        trigger.addEventListener('click', async () => {
+            const market = trigger.dataset.market || 'USA';
+            console.log(`Starting analysis for market: ${market}`);
 
-        try {
-            const data = await API.analyze();
-            completeProgress();
-            appState.analysisData = data;
+            navigateToScreen('loaderScreen');
+            startCircularProgress();
 
-            setTimeout(() => {
-                renderResultsStage1(data);
-                navigateToScreen('resultsScreen1');
-            }, 500);
-        } catch (error) {
-            alert('Error al realizar el análisis. Por favor, intenta nuevamente.');
-            navigateToScreen('homeScreen');
-        }
+            try {
+                const data = await API.analyze();
+                completeProgress();
+                appState.analysisData = data;
+
+                setTimeout(() => {
+                    renderResultsStage1(data);
+                    navigateToScreen('resultsScreen1');
+                }, 500);
+            } catch (error) {
+                console.error('Analysis error:', error);
+                alert('Error al realizar el análisis. Por favor, intenta nuevamente.');
+                navigateToScreen('homeScreen');
+            }
+        });
     });
 }
 

@@ -26,20 +26,84 @@
     <div id="homeScreen" class="screen active">
         <div class="container">
             <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    EXPLORADOR DE MERCADOS GLOBALES
+                </div>
                 <img src="logo.png" alt="Home Background" class="home-background" style="
     width: 23em;
     margin-bottom: 3em;
                     max-width: 100%;
 ">
 
-                <p class="hero-subtitle">
-                    Elimina el ruido del mercado. Encuentra las mejores acciones y ETFs filtrados por métricas
-                    fundamentales de forma automática.
+                <p class="hero-subtitle1">
+                    "El descubrimiento consiste no en buscar nuevos paisajes, sino en tener nuevos ojos."
                 </p>
+                <p class="hero-subtitle">
+                    Navegue a través de los centros financieros más influyentes del mundo y descubra oportunidades
+                    únicas.
+                </p>
+                <div class="market-hubs-grid">
+                    <!-- USA Card (Large) -->
+                    <div class="market-card large-card explorer-trigger" data-market="USA">
 
-                <button id="startBtn" class="cta-button">
-                    <span>Encontrar Oportunidades</span>
-                </button>
+                        <div class="market-info">
+                            <span class="market-tag">DOMINIO TECNOLÓGICO</span>
+                            <h2 class="market-title">Innovation Hub: USA</h2>
+                            <p class="market-desc">Ecosistema líder de gigantes tecnológicos y capital de riesgo global
+                                para el inversor institucional.</p>
+                        </div>
+                        <div class="market-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 17L17 7M17 7H7M17 7V17" />
+                            </svg>
+                        </div>
+                        <div class="market-flag">
+                            <img src="https://flagcdn.com/w80/us.png" alt="USA Flag">
+                        </div>
+                    </div>
+
+                    <!-- Right Column (China & UK) -->
+                    <div class="side-hubs">
+                        <!-- China Card -->
+                        <div class="market-card small-card coming-soon" data-market="China">
+
+                            <div class="market-info">
+                                <span class="market-tag">POTENCIA EMERGENTE — PRÓXIMAMENTE</span>
+                                <h3 class="market-title">Growth Frontier: China</h3>
+                                <p class="market-desc">Escala sin precedentes y revolución digital en el mercado
+                                    asiático.</p>
+                            </div>
+                            <div class="market-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                                </svg>
+                            </div>
+                            <div class="market-flag">
+                                <img src="https://flagcdn.com/w80/cn.png" alt="China Flag">
+                            </div>
+                        </div>
+
+                        <!-- UK Card -->
+                        <div class="market-card small-card coming-soon" data-market="UK">
+
+                            <div class="market-info">
+                                <span class="market-tag">TRADICIÓN FINANCIERA — PRÓXIMAMENTE</span>
+                                <h3 class="market-title">Stable Economy: UK</h3>
+                                <p class="market-desc">Refugio institucional para inversores que buscan valor y
+                                    estabilidad histórica.</p>
+                            </div>
+                            <div class="market-arrow">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M7 17L17 7M17 7H7M17 7V17" />
+                                </svg>
+                            </div>
+                            <div class="market-flag">
+                                <img src="https://flagcdn.com/w80/gb.png" alt="UK Flag">
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="stats-row-home">
                     <div class="stat-item">
