@@ -433,8 +433,7 @@ function createCategorySection(category, items) {
     section.innerHTML = `
         <div class="category-header">
             <span class="category-icon">${category.icon}</span>
-            <h2 class="category-title">${category.title}</h2>
-            <span class="category-badge">${category.count} acciones</span>
+            <h2 class="category-title">${category.title} (${category.count} )</h2>
         </div>
         <div class="cards-grid">
             <!-- Cards injected here -->
