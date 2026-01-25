@@ -1196,84 +1196,86 @@ tbody {
 
     /* Compact Bar Mobile Adjustments */
     .selection-cart {
-        padding: 0.5rem 0;
-        max-height: 45vh;
+        padding: 0.5rem;
+        max-height: 50vh;
         overflow-y: auto;
+        display: block !important;
+        /* Ensure it stays block */
     }
 
     .cart-inner-wrapper {
-        gap: 0.4rem;
-    }
-
-    .cart-main-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.75rem;
-    }
-
-    .selected-tickers-list {
-        max-height: 80px;
-        overflow-y: auto;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        padding-bottom: 0.4rem;
-        margin-bottom: 0.4rem;
-        display: block;
-    }
-
-    .selected-ticker-chip {
-        display: inline-flex;
-        margin: 2px;
-        padding: 0.3rem 0.6rem;
-        font-size: 0.75rem;
-    }
-
-    .form-row-compact {
-        flex-direction: column;
-        gap: 0.75rem;
-        align-items: stretch;
-    }
-
-    .form-group-compact {
-        gap: 0.25rem;
-    }
-
-    .form-group-compact label {
-        font-size: 0.65rem;
-    }
-
-    .form-group-compact input {
+        gap: 0.5rem;
         width: 100%;
-        padding: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    .cta-button-compact {
-        width: 100%;
-        padding: 0.8rem;
-        margin-top: 0.25rem;
     }
 
     .cart-top-row {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.5rem;
+    }
+
+    .cart-title-row {
         gap: 0.5rem;
-    }
-
-    .cart-title {
-        font-size: 0.85rem;
-    }
-
-    .cart-description-wrapper {
-        display: none !important;
     }
 
     .cart-description {
         display: none !important;
     }
 
+    .cart-main-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.5rem;
+    }
+
+    .selected-tickers-list {
+        max-height: 90px;
+        overflow-y: auto;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 4px;
+        padding: 4px 0;
+    }
+
+    .selected-ticker-chip {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        white-space: nowrap !important;
+        padding: 4px 8px !important;
+        font-size: 0.75rem !important;
+        width: auto !important;
+        flex: none !important;
+    }
+
+    .form-row-compact {
+        flex-direction: column !important;
+        gap: 0.5rem !important;
+        width: 100%;
+    }
+
+    .form-group-compact {
+        width: 100%;
+    }
+
+    .form-group-compact input {
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .cta-button-compact {
+        width: 100% !important;
+        margin-top: 5px;
+        padding: 12px !important;
+        z-index: 10;
+        position: relative;
+    }
+
     .results-content-area {
-        padding-bottom: 380px;
+        padding-bottom: 420px;
     }
 }
 
