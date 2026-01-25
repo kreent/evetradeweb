@@ -1662,6 +1662,40 @@ tbody {
     display: flex !important;
 }
 
+/* Ad Container */
+.ad-banner-container {
+    display: none;
+    /* Hidden by default (USA) */
+    justify-content: center;
+    align-items: center;
+    margin: 2rem auto;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 1rem;
+}
+
+.ad-banner-container.visible {
+    display: flex;
+    /* Shown for China/UK */
+}
+
+.ad-banner-placeholder {
+    width: 100%;
+    height: 100px;
+    /* Minimal height */
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.3);
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.8rem;
+    overflow: hidden;
+}
+
 .filter-label {
     display: block;
     font-size: 0.75rem;

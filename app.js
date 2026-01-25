@@ -3,6 +3,7 @@
 // ================================================================
 const appState = {
     currentScreen: 'home',
+    currentMarket: 'USA', // 'USA', 'China', 'UK'
     analysisData: null,
     refinedData: null,
     selectedTickers: new Set(),
@@ -27,7 +28,13 @@ const API_BASE = isDevelopment
 const API_ENDPOINTS = {
     analyze: `${API_BASE}/analyze`,
     refine: `${API_BASE}/refine`,
-    follow: `${API_BASE}/follow`
+    follow: `${API_BASE}/follow`,
+    // China
+    china_analizer: `${API_BASE}/china_analizer`,
+    china_refiner: `${API_BASE}/china_refiner`,
+    // UK
+    analyzeuk: `${API_BASE}/analyzeuk`,
+    refineruk: `${API_BASE}/refineruk`
 };
 
 // ================================================================
@@ -52,10 +59,14 @@ const METRIC_INFO = {
 // API Service
 // ================================================================
 const API = {
-    async analyze() {
+    async analyze(market = 'USA') {
         try {
-            const response = await fetch(API_ENDPOINTS.analyze);
-            if (!response.ok) throw new Error('Error al analizar');
+            let endpoint = API_ENDPOINTS.analyze;
+            if (market === 'China') endpoint = API_ENDPOINTS.china_analizer;
+            if (market === 'UK') endpoint = API_ENDPOINTS.analyzeuk;
+
+            const response = await fetch(endpoint);
+            if (!response.ok) throw new Error(`Error al analizar mercado ${market}`);
             return await response.json();
         } catch (error) {
             console.error('API Error (analyze):', error);
@@ -63,10 +74,14 @@ const API = {
         }
     },
 
-    async refine() {
+    async refine(market = 'USA') {
         try {
-            const response = await fetch(API_ENDPOINTS.refine);
-            if (!response.ok) throw new Error('Error al refinar');
+            let endpoint = API_ENDPOINTS.refine;
+            if (market === 'China') endpoint = API_ENDPOINTS.china_refiner;
+            if (market === 'UK') endpoint = API_ENDPOINTS.refineruk;
+
+            const response = await fetch(endpoint);
+            if (!response.ok) throw new Error(`Error al refinar mercado ${market}`);
             return await response.json();
         } catch (error) {
             console.error('API Error (refine):', error);
@@ -263,25 +278,42 @@ function initHomeScreen() {
             const market = trigger.dataset.market || 'USA';
             console.log(`Starting analysis for market: ${market}`);
 
-            navigateToScreen('loaderScreen');
-            startCircularProgress();
+            // Update URL and State
+            appState.currentMarket = market;
 
-            try {
-                const data = await API.analyze();
-                completeProgress();
-                appState.analysisData = data;
-
-                setTimeout(() => {
-                    renderResultsStage1(data);
-                    navigateToScreen('resultsScreen1');
-                }, 500);
-            } catch (error) {
-                console.error('Analysis error:', error);
-                alert('Error al realizar el análisis. Por favor, intenta nuevamente.');
-                navigateToScreen('homeScreen');
+            if (market === 'USA') {
+                history.pushState({ screen: 'resultsScreen1', market: 'USA' }, '', '/usa');
+            } else if (market === 'China') {
+                history.pushState({ screen: 'resultsScreen1', market: 'China' }, '', '/china');
+            } else if (market === 'UK') {
+                history.pushState({ screen: 'resultsScreen1', market: 'UK' }, '', '/uk');
             }
+
+            // Start Analysis
+            startMarketAnalysis(market);
         });
     });
+}
+
+async function startMarketAnalysis(market) {
+    appState.currentMarket = market;
+    navigateToScreen('loaderScreen');
+    startCircularProgress();
+
+    try {
+        const data = await API.analyze(market);
+        completeProgress();
+        appState.analysisData = data;
+
+        setTimeout(() => {
+            renderResultsStage1(data);
+            navigateToScreen('resultsScreen1');
+        }, 500);
+    } catch (error) {
+        console.error('Analysis error:', error);
+        alert('Error al realizar el análisis. Por favor, intenta nuevamente.');
+        navigateToScreen('homeScreen');
+    }
 }
 
 // ================================================================
@@ -291,6 +323,18 @@ function renderResultsStage1(data) {
     // Update stats
     const candidatesEl = document.getElementById('candidatesCount');
     if (candidatesEl) candidatesEl.textContent = data.candidates_count || '-';
+
+    // Toggle AdSense visibility based on market
+    const adContainer = document.getElementById('marketAdContainer');
+    if (adContainer) {
+        if (appState.currentMarket === 'China' || appState.currentMarket === 'UK') {
+            adContainer.classList.add('visible');
+            // Refresh ads if needed:
+            // (element logic handled by script tag auto-push)
+        } else {
+            adContainer.classList.remove('visible');
+        }
+    }
 
     // Render cards
     const container = document.getElementById('resultsGrid');
@@ -362,7 +406,7 @@ function initResultsScreen1() {
         startCircularProgress();
 
         try {
-            const data = await API.refine();
+            const data = await API.refine(appState.currentMarket);
             completeProgress();
             appState.refinedData = data;
 
@@ -954,4 +998,44 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
     init();
+
+    // Check for initial route
+    const path = window.location.pathname;
+    if (path === '/usa') {
+        startMarketAnalysis('USA');
+    } else if (path === '/china') {
+        startMarketAnalysis('China');
+    } else if (path === '/uk') {
+        startMarketAnalysis('UK');
+    }
+
+    // Handle Back/Forward Navigation
+    window.addEventListener('popstate', (event) => {
+        const path = window.location.pathname;
+        if (path === '/usa') {
+            appState.currentMarket = 'USA';
+            if (appState.analysisData) {
+                navigateToScreen('resultsScreen1');
+            } else {
+                startMarketAnalysis('USA');
+            }
+        } else if (path === '/china') {
+            appState.currentMarket = 'China';
+            if (appState.analysisData) {
+                navigateToScreen('resultsScreen1');
+            } else {
+                startMarketAnalysis('China');
+            }
+        } else if (path === '/uk') {
+            appState.currentMarket = 'UK';
+            if (appState.analysisData) {
+                navigateToScreen('resultsScreen1');
+            } else {
+                startMarketAnalysis('UK');
+            }
+        } else {
+            // Default to Home
+            navigateToScreen('homeScreen');
+        }
+    });
 }
