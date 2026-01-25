@@ -681,7 +681,7 @@ function renderResultsStage3(data) {
             stocksText = `en ${count} acciones específicas (${tickerNames.join(', ')} y ${last})`;
         }
 
-        projectionSubtitle.innerHTML = `Estos son los resultados de la simulación: qué hubiera pasado si hubieras invertido <strong>${capital}</strong> ${stocksText} desde la fecha <strong>${date}</strong>.`;
+        projectionSubtitle.innerHTML = `Estos son los resultados de la simulación: qué hubiera pasado de haber invertido <strong>${capital}</strong> ${stocksText} desde la fecha <strong>${date}</strong>.`;
     }
 
     // Update portfolio metrics
@@ -705,7 +705,7 @@ function renderResultsStage3(data) {
         if (positiveReturns.length > 0) {
             const positiveHeader = document.createElement('div');
             positiveHeader.style.gridColumn = '1 / -1';
-            positiveHeader.innerHTML = `<h3 style="color: var(--primary); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(74, 222, 128, 0.2); padding-bottom: 0.5rem;">Pudo ser una excelente oportunidad</h3>`;
+            positiveHeader.innerHTML = `<h3 style="color: var(--primary); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(74, 222, 128, 0.2); padding-bottom: 0.5rem;">Estas acciones podrían ser una excelente oportunidad</h3>`;
             container.appendChild(positiveHeader);
 
             positiveReturns.forEach(ticker => {
@@ -718,7 +718,7 @@ function renderResultsStage3(data) {
         if (negativeReturns.length > 0) {
             const negativeHeader = document.createElement('div');
             negativeHeader.style.gridColumn = '1 / -1';
-            negativeHeader.innerHTML = `<h3 style="color: #ef4444; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 0.5rem;">Hay que analizarlas con cuidado</h3>`;
+            negativeHeader.innerHTML = `<h3 style="color: #ef4444; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 0.5rem;">Hay que analizarlas un poco más</h3>`;
             container.appendChild(negativeHeader);
 
             negativeReturns.forEach(ticker => {
