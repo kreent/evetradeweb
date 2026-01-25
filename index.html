@@ -31,7 +31,15 @@
                     <span>Inicio</span>
                 </a>
             </div>
-            <nav class="header-nav">
+            <nav class="header-nav" style="display: flex; gap: 0.5rem;">
+                <button id="filterOpenBtn" class="nav-button" style="align-items: center; gap: 0.5rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"
+                        fill="currentColor">
+                        <path
+                            d="M440-160q-17 0-28.5-11.5T400-200v-240L161-745q-14-17-4-36t31-19h584q21 0 31 19t-4 36L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z" />
+                    </svg>
+                    Filtros
+                </button>
                 <button id="openGlossaryBtn" class="nav-button">Glosario</button>
             </nav>
         </div>
@@ -274,7 +282,80 @@ width: 23em;
     <script type="module" src="app.js?v=2"></script>
 
     <!-- Particles.js Library -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script> <!-- Filter Modal -->
+    <div id="filterBackdrop" class="modal-backdrop"></div>
+    <div id="filterModal" class="modal-sidebar">
+        <div class="modal-header">
+            <div class="modal-title-row">
+                <h2>Filtros</h2>
+            </div>
+            <button id="clearFiltersBtn"
+                style="background: none; border: none; color: var(--primary); font-size: 0.9rem; cursor: pointer;">Limpiar
+                todo</button>
+        </div>
+
+        <div class="modal-content" style="padding: 1.5rem;">
+
+            <!-- Sector Filter -->
+            <div class="filter-section">
+                <label class="filter-label">SECTOR</label>
+                <div class="sector-list">
+                    <label class="sector-checkbox">
+                        <input type="checkbox" value="Financial Services">
+                        <span class="checkmark"></span>
+                        Financial Services
+                    </label>
+                    <label class="sector-checkbox">
+                        <input type="checkbox" value="Technology">
+                        <span class="checkmark"></span>
+                        Technology
+                    </label>
+                    <label class="sector-checkbox">
+                        <input type="checkbox" value="Healthcare">
+                        <span class="checkmark"></span>
+                        Healthcare
+                    </label>
+                    <label class="sector-checkbox">
+                        <input type="checkbox" value="Consumer Cyclical">
+                        <span class="checkmark"></span>
+                        Consumer Cyclical
+                    </label>
+                    <label class="sector-checkbox">
+                        <input type="checkbox" value="Industrials">
+                        <span class="checkmark"></span>
+                        Industrials
+                    </label>
+                </div>
+            </div>
+
+
+            <!-- Valuation -->
+            <div class="filter-section">
+                <label class="filter-label">VALUACIÓN</label>
+                <div class="valuation-options">
+                    <label class="valuation-radio">
+                        <input type="radio" name="valuation" value="undervalued">
+                        <span class="radio-mark"></span>
+                        Subvaluado
+                    </label>
+                    <label class="valuation-radio">
+                        <input type="radio" name="valuation" value="fair">
+                        <span class="radio-mark"></span>
+                        Precio Justo
+                    </label>
+                    <label class="valuation-radio">
+                        <input type="radio" name="valuation" value="all" checked>
+                        <span class="radio-mark"></span>
+                        Todos
+                    </label>
+                </div>
+            </div>
+
+            <button id="applyFiltersBtn" class="cta-button primary" style="width: 100%; margin-top: 1rem;">
+                <span>Optimizar Lista</span>
+            </button>
+        </div>
+    </div>
     <script>
         // Initialize Particles.js
         document.addEventListener('DOMContentLoaded', function () {

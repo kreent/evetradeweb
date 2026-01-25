@@ -1309,6 +1309,8 @@ tbody {
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
+    height: 280px;
+    overflow: hidden;
 }
 
 .stock-card:hover {
@@ -1324,7 +1326,9 @@ tbody {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 10px;
+    padding-right: 3rem;
+    /* Space for the selection checkbox */
 }
 
 .ticker-info {
@@ -1370,44 +1374,53 @@ tbody {
 }
 
 .price-current {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    color: var(--primary);
+    color: #a6cfd4;
     display: block;
+    line-height: 1;
 }
 
 /* Card Metrics Grid */
 .card-metrics {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: var(--spacing-md);
-    padding: 12px 0;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem 0.5rem;
+    padding: 1rem 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .metric-item {
     display: flex;
     flex-direction: column;
+    gap: 0.4rem;
 }
 
 .metric-title {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-muted);
-    margin-bottom: 2px;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    opacity: 0.8;
 }
 
 .metric-value {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 1.15rem;
+    font-weight: 700;
     color: var(--text-primary);
+    font-family: var(--font-mono);
 }
 
 .metric-value.highlight {
     color: var(--warning);
+}
+
+.metric-value.positive {
+    color: var(--primary);
+}
+
+.metric-value.negative {
+    color: #ef4444;
 }
 
 /* Card Footer */
@@ -1442,26 +1455,38 @@ tbody {
     letter-spacing: 0.5px;
 }
 
+.card-reason {
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.25);
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-md);
+    margin-top: auto;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 /* Selection Button for Refined Cards */
 .card-action {
     position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 5;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 10;
 }
 
 .select-card-btn {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    border: 2px solid var(--text-muted);
-    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    background: transparent;
     color: transparent;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .select-card-btn:hover {
@@ -1481,8 +1506,7 @@ tbody {
     font-size: 0.85rem;
     color: var(--text-secondary);
     line-height: 1.5;
-    margin-top: 10px;
-    padding: 10px;
+    padding: 0;
     background: rgba(0, 0, 0, 0.2);
     border-radius: var(--radius-sm);
     font-style: italic;
@@ -1624,6 +1648,266 @@ tbody {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(0, 255, 136, 0.05);
 }
 
+/* ================================================================ */
+/* FILTER SIDEBAR STYLES */
+/* ================================================================ */
+
+/* Initial state hidden, toggled via JS */
+#filterOpenBtn {
+    display: none !important;
+    /* Force hide initially */
+}
+
+#filterOpenBtn.visible {
+    display: flex !important;
+}
+
+.filter-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.8rem;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Search Input */
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input-wrapper svg {
+    position: absolute;
+    left: 12px;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.search-input-wrapper input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    padding: 12px 12px 12px 40px;
+    color: white;
+    font-size: 0.95rem;
+    font-family: var(--font-primary);
+    transition: all 0.3s ease;
+}
+
+.search-input-wrapper input:focus {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.1);
+}
+
+/* Sector List */
+.sector-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.sector-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    user-select: none;
+}
+
+.sector-checkbox input {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    transition: all 0.2s;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.sector-checkbox input:checked+.checkmark {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+}
+
+.sector-checkbox input:checked+.checkmark::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid black;
+    /* Black check on green bg */
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.sector-checkbox:hover .checkmark {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Range Slider */
+.range-slider {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    outline: none;
+}
+
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    transition: transform 0.1s;
+    margin-top: -7px;
+    /* Align thumb vertically */
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+.range-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.filter-value-badge {
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--primary);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+/* Segmented Control */
+.segmented-control {
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    /* Container bg */
+    border-radius: var(--radius-full);
+    padding: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.segment-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 8px;
+    border-radius: var(--radius-full);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.segment-btn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.segment-btn:hover:not(.active) {
+    color: white;
+}
+
+/* Valuation Radios */
+.valuation-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.valuation-radio {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+}
+
+.valuation-radio:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.valuation-radio input {
+    display: none;
+}
+
+.radio-mark {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.valuation-radio input:checked+.radio-mark {
+    border-color: var(--primary);
+}
+
+.valuation-radio input:checked+.radio-mark::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--primary);
+}
+
+.valuation-radio input:checked~span {
+    /* Assuming text is in a span if wrapped differently, but here text is direct child. 
+                                           Let's target the label itself via :has() or just use simple sibling styling if strictly structured.
+                                           Actually, the text is a text node. Let's color the label text via the :has pseudo-class or simple parent class toggle in JS if needed. 
+                                           CSS :checked selector works for siblings.
+                                        */
+    color: white;
+}
+
+/* Active Valuation Card Style */
+.valuation-radio:has(input:checked) {
+    border-color: var(--primary);
+    background: rgba(0, 255, 136, 0.05);
+}
+
 .glossary-card-header {
     display: flex;
     justify-content: space-between;
@@ -1695,58 +1979,9 @@ tbody {
     }
 }
 
-/* Tooltip Styles */
-[data-tooltip] {
-    position: relative;
-    cursor: help;
-}
+/* Tooltips disabled - definitions moved to Glossary */
 
-[data-tooltip]:hover {
-    z-index: 5000;
-    /* Ensure the hovered element and its tooltip pop to the front */
-}
-
-[data-tooltip]::before {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%) translateY(10px);
-    background: rgba(13, 27, 30, 0.98);
-    backdrop-filter: blur(8px);
-    color: white;
-    padding: 12px;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 0.85rem;
-    font-family: var(--font-primary);
-    font-weight: 400;
-    line-height: 1.4;
-    white-space: normal;
-    width: max-content;
-    max-width: 280px;
-    z-index: 9999;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    text-decoration: none;
-    text-transform: none;
-}
-
-[data-tooltip]:hover::before {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-.metric-title {
-    text-decoration: underline dotted rgba(255, 255, 255, 0.3);
-}
-
-.metric-title:hover {
-    color: var(--primary);
-    text-decoration-color: var(--primary);
-}
+/* Metric labels simplified */
 
 .hero-badge {
     background: #102237b0;

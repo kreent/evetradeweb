@@ -199,12 +199,27 @@ function navigateToScreen(screenId) {
             document.body.scrollTop = 0;
         };
 
+        // Attempt scroll immediately
         forceScroll();
-        requestAnimationFrame(forceScroll);
-        setTimeout(forceScroll, 50);
+
+        // Attempt again after a minimal delay to handle any layout shifts
+        requestAnimationFrame(() => {
+            forceScroll();
+            setTimeout(forceScroll, 10);
+        });
+
+        // Toggle Filter Button Visibility
+        const filterBtn = document.getElementById('filterOpenBtn');
+        if (filterBtn) {
+            // Show only on Results Screen 1 (where the grid is)
+            if (screenId === 'resultsScreen1') {
+                filterBtn.classList.add('visible');
+            } else {
+                filterBtn.classList.remove('visible');
+            }
+        }
     }
 }
-
 // ================================================================
 // Utility Functions
 // ================================================================
@@ -307,39 +322,32 @@ function createStockCard(stock) {
                 <div class="sector-pill">${stock.Sector || 'N/A'}</div>
             </div>
             <div class="price-info">
-                <span class="price-current">${formatCurrency(stock.Price)}</span>
-                <!-- Assuming formatted percentage logic if available, or just empty for now -->
+                <span class="price-current">USD ${formatCurrency(stock.Price)}</span>
             </div>
         </div>
         
         <div class="card-metrics">
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['ROIC']}">ROIC</span>
-                <span class="metric-value" style="${roicClass}">${formatPercent(stock.ROIC, 1)}</span>
+                <span class="metric-title">ROIC</span>
+                <span class="metric-value positive">${formatPercent(stock.ROIC, 1)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['Piotroski']}">Piotroski</span>
+                <span class="metric-title">Piotroski</span>
                 <span class="metric-value highlight">${stock.Piotroski}/9</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['Growth_Est']}">Growth</span>
-                <span class="metric-value">${formatPercent(stock.Growth_Est, 1)}</span>
+                <span class="metric-title">Growth</span>
+                <span class="metric-value positive">${formatPercent(stock.Growth_Est, 1)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['MOS']}">MOS</span>
-                <span class="metric-value" style="${mosClass}">${formatPercent(stock.MOS, 1)}</span>
+                <span class="metric-title">MOS</span>
+                <span class="metric-value ${(stock.MOS || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(stock.MOS, 1)}</span>
             </div>
         </div>
 
-        <div class="card-footer">
-            <div style="text-align: left;">
-                <span class="intrinsic-label">Intrinsic Val</span>
-                <span class="intrinsic-value">${formatLargeNumber(stock.Intrinsic)}</span>
-            </div>
-            <div class="valuation-status">
-                <span class="valuation-label">Valuation</span>
-                <span class="valuation-tag">${(stock.MOS || 0) > 0 ? 'UNDERVALUED' : 'OVERVALUED'}</span>
-            </div>
+        <div class="card-reason" style="margin-top: auto; font-size: 0.8rem; opacity: 0.9;">
+            Intrinsic Value: ${formatLargeNumber(stock.Intrinsic)} | 
+            Valuation: ${(stock.MOS || 0) > 0 ? 'UNDERVALUED' : 'OVERVALUED'}
         </div>
     `;
 
@@ -490,31 +498,32 @@ function createRefinedStockCard(item) {
                 </div>
                 <div class="sector-pill">${item.Sector || '-'}</div>
             </div>
-             <!-- In refined data, we might not have price readily available in the same format depending on the refined object, checking data structure -->
-             <!-- Assuming similar structure or omitting price if missing -->
+            <div class="price-info">
+                 <span class="price-current">USD ${formatCurrency(item.Price || 0)}</span>
+            </div>
         </div>
         
         <div class="card-metrics">
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['ROIC']}">ROIC</span>
-                <span class="metric-value" style="${roicClass}">${formatPercent(item.ROIC, 1)}</span>
+                <span class="metric-title">ROIC</span>
+                <span class="metric-value ${(item.ROIC || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(item.ROIC, 1)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['Piotroski']}">Piotroski</span>
+                <span class="metric-title">Piotroski</span>
                 <span class="metric-value highlight">${item.Piotroski || '-'}/9</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['OLD_MOS']}">Old MOS</span>
-                <span class="metric-value">${formatPercent(item.Old_MOS, 1)}</span>
+                 <span class="metric-title">Growth</span>
+                 <span class="metric-value positive">${formatPercent(item.Growth || item.Growth_Est || 0, 1)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['MOS']}">Real MOS</span>
-                <span class="metric-value" style="${mosClass}">${formatPercent(item.Real_MOS, 1)}</span>
+                <span class="metric-title">Real MOS</span>
+                <span class="metric-value ${(item.Real_MOS || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(item.Real_MOS, 1)}</span>
             </div>
         </div>
 
         <div class="card-reason">
-            ${item.Why || 'Sin notas adicionales.'}
+            ${item.Why || 'Tesis Sólida: Análisis técnico y fundamental positivo para el horizonte actual.'}
         </div>
     `;
 
@@ -744,41 +753,35 @@ function createPortfolioCard(ticker) {
                     <div class="ticker-badge-small">${initial}</div>
                     ${ticker.ticker || '-'}
                 </div>
+                <div class="sector-pill">Asset Portfolio</div>
             </div>
             <div class="price-info">
-                <span class="price-current">${formatCurrency(ticker.valor_actual)}</span>
-                <span style="font-size: 0.75rem; color: var(--text-secondary); display: block;">Valor Actual</span>
+                <span class="price-current">USD ${formatCurrency(ticker.valor_actual)}</span>
             </div>
         </div>
         
         <div class="card-metrics">
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['Retorno']}">Retorno</span>
-                <span class="metric-value" style="${returnClass}">${formatPercent(ticker.retorno_pct / 100)}</span>
+                <span class="metric-title">Retorno</span>
+                <span class="metric-value ${(ticker.retorno_pct || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(ticker.retorno_pct / 100)}</span>
             </div>
              <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['Contribución']}">Contribución</span>
-                <span class="metric-value" style="${contributionClass}">${formatPercent(ticker.contribucion_retorno_pct / 100)}</span>
+                <span class="metric-title">Contribución</span>
+                <span class="metric-value ${(ticker.contribucion_retorno_pct || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(ticker.contribucion_retorno_pct / 100)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['Ganancia']}">Ganancia/Pérdida</span>
-                <span class="metric-value" style="${contributionClass}">${formatCurrency(ticker.ganancia_perdida)}</span>
+                <span class="metric-title">Ganancia</span>
+                <span class="metric-value ${(ticker.ganancia_perdida || 0) >= 0 ? 'positive' : 'negative'}">${formatCurrency(ticker.ganancia_perdida)}</span>
             </div>
             <div class="metric-item">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['Peso']}">Peso</span>
+                <span class="metric-title">Peso</span>
                 <span class="metric-value">${formatPercent(ticker.peso_portfolio / 100, 1)}</span>
             </div>
         </div>
 
-        <div class="card-footer" style="padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
-            <div class="metric-item" style="align-items: flex-start;">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['Capital_Inicial']}">Capital Inicial</span>
-                <span class="metric-value" style="font-size: 0.9rem;">${formatCurrency(ticker.capital_inicial)}</span>
-            </div>
-             <div class="metric-item" style="align-items: flex-end;">
-                <span class="metric-title" data-tooltip="${METRIC_INFO['Volatilidad']}">Volatilidad</span>
-                <span class="metric-value" style="font-size: 0.9rem;">${formatPercent(ticker.volatilidad_anual_pct / 100)}</span>
-            </div>
+        <div class="card-reason" style="margin-top: auto; font-size: 0.8rem; opacity: 0.8;">
+            Cap. Inicial: ${formatCurrency(ticker.capital_inicial)} | 
+            Volatilidad: ${formatPercent(ticker.volatilidad_anual_pct / 100)}
         </div>
     `;
 
@@ -820,8 +823,9 @@ function init() {
     initResultsScreen3();
     initHoverGlow();
     initGlossary();
+    initFilterSidebar();
 
-    // Set default date to 01/01/2024 as requested
+    // Set default date to 01/01/2026 as requested
     document.getElementById('startDate').value = '2026-01-01';
 }
 
@@ -867,6 +871,81 @@ function initHoverGlow() {
             button.style.setProperty('--glow-x', `${x}px`);
             button.style.setProperty('--glow-y', `${y}px`);
         }
+    });
+}
+
+// ================================================================
+// Filter Sidebar Logic
+// ================================================================
+function initFilterSidebar() {
+    const openBtn = document.getElementById('filterOpenBtn');
+    const modal = document.getElementById('filterModal');
+    const backdrop = document.getElementById('filterBackdrop');
+
+    // Close using the common backdrop
+    const toggle = (show) => {
+        modal.classList.toggle('active', show);
+        backdrop.classList.toggle('active', show);
+        document.body.style.overflow = show ? 'hidden' : '';
+    };
+
+    if (openBtn) openBtn.addEventListener('click', () => toggle(true));
+    if (backdrop) backdrop.addEventListener('click', () => toggle(false));
+
+
+    // Clear Filters
+    const clearBtn = document.getElementById('clearFiltersBtn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            document.querySelectorAll('.sector-checkbox input').forEach(cb => cb.checked = false);
+
+
+            const allRadio = document.querySelector('input[name="valuation"][value="all"]');
+            if (allRadio) allRadio.checked = true;
+
+            // Re-render original
+            if (appState.analysisData) {
+                renderResultsStage1(appState.analysisData);
+            }
+        });
+    }
+
+    // Apply Filters
+    const applyBtn = document.getElementById('applyFiltersBtn');
+    if (applyBtn) {
+        applyBtn.addEventListener('click', () => {
+            applyAdvancedFilters();
+            toggle(false);
+        });
+    }
+}
+
+function applyAdvancedFilters() {
+    if (!appState.analysisData || !appState.analysisData.results) return;
+
+    let results = appState.analysisData.results;
+
+    // 1. Sector
+    const checkedSectors = Array.from(document.querySelectorAll('.sector-checkbox input:checked')).map(cb => cb.value);
+    if (checkedSectors.length > 0) {
+        results = results.filter(item => checkedSectors.includes(item.Sector));
+    }
+
+
+    // 5. Valuation
+    const valuationRadio = document.querySelector('input[name="valuation"]:checked');
+    if (valuationRadio) {
+        const valuation = valuationRadio.value;
+        if (valuation === 'undervalued') {
+            results = results.filter(item => (item.MOS || 0) > 0);
+        } else if (valuation === 'fair') {
+            results = results.filter(item => (item.MOS || 0) > -20);
+        }
+    }
+
+    renderResultsStage1({
+        results: results,
+        candidates_count: results.length
     });
 }
 
