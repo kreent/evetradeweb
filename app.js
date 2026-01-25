@@ -342,6 +342,10 @@ function renderResultsStage1(data) {
 
     if (data.results && Array.isArray(data.results)) {
         data.results.forEach(stock => {
+            // Debug log for checking field names from different endpoints
+            if (appState.currentMarket === 'China' || appState.currentMarket === 'UK') {
+                console.log('Stock Item:', stock);
+            }
             const card = createStockCard(stock);
             container.appendChild(card);
         });
