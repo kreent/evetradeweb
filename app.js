@@ -192,12 +192,16 @@ function navigateToScreen(screenId) {
         targetScreen.classList.add('active');
         appState.currentScreen = screenId;
 
-        // Use requestAnimationFrame to ensure the new screen is rendered before scrolling
-        requestAnimationFrame(() => {
+        // Comprehensive scroll-to-top strategy
+        const forceScroll = () => {
             window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
-        });
+        };
+
+        forceScroll();
+        requestAnimationFrame(forceScroll);
+        setTimeout(forceScroll, 50);
     }
 }
 
