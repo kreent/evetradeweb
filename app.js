@@ -295,8 +295,34 @@ function initHomeScreen() {
     });
 }
 
+function updateLoaderInfo(market) {
+    const loaderFlag = document.getElementById('loaderFlag');
+    const loaderTitle = document.getElementById('loaderTitle');
+
+    const marketConfig = {
+        'USA': {
+            flag: 'https://flagcdn.com/w80/us.png',
+            title: 'Analizando Mercado USA'
+        },
+        'China': {
+            flag: 'https://flagcdn.com/w80/cn.png',
+            title: 'Analizando Mercado China'
+        },
+        'UK': {
+            flag: 'https://flagcdn.com/w80/gb.png',
+            title: 'Analizando Mercado UK'
+        }
+    };
+
+    const config = marketConfig[market] || marketConfig['USA'];
+    loaderFlag.src = config.flag;
+    loaderFlag.alt = `${market} Flag`;
+    loaderTitle.textContent = config.title;
+}
+
 async function startMarketAnalysis(market) {
     appState.currentMarket = market;
+    updateLoaderInfo(market);
     navigateToScreen('loaderScreen');
     startCircularProgress();
 

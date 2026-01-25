@@ -1696,6 +1696,22 @@ tbody {
     overflow: hidden;
 }
 
+/* Loader Market Info */
+.loader-market-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.loader-flag {
+    width: 60px;
+    height: auto;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 12px rgba(0, 245, 255, 0.2);
+}
+
 .filter-label {
     display: block;
     font-size: 0.75rem;
