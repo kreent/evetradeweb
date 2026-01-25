@@ -342,10 +342,6 @@ function renderResultsStage1(data) {
 
     if (data.results && Array.isArray(data.results)) {
         data.results.forEach(stock => {
-            // Debug log for checking field names from different endpoints
-            if (appState.currentMarket === 'China' || appState.currentMarket === 'UK') {
-                console.log('Stock Item:', stock);
-            }
             const card = createStockCard(stock);
             container.appendChild(card);
         });
@@ -359,6 +355,8 @@ function createStockCard(stock) {
     const roicClass = (stock.ROIC || 0) >= 0 ? 'color: var(--primary);' : 'color: #ef4444;';
     const mosClass = (stock.MOS || 0) >= 0 ? 'color: var(--primary);' : 'color: #ef4444;';
     const initial = getTickerInitial(stock.Ticker);
+    const price = stock.Price || stock.Price_Local || 0;
+    const currency = stock.Currency || 'USD';
 
     card.innerHTML = `
         <div class="card-header">
@@ -370,7 +368,7 @@ function createStockCard(stock) {
                 <div class="sector-pill">${stock.Sector || 'N/A'}</div>
             </div>
             <div class="price-info">
-                <span class="price-current">USD ${formatCurrency(stock.Price)}</span>
+                <span class="price-current">${currency} ${formatNumber(price)}</span>
             </div>
         </div>
         
@@ -530,6 +528,8 @@ function createRefinedStockCard(item) {
     const mosClass = (item.Real_MOS || item.Old_MOS || 0) >= 0 ? 'color: var(--primary);' : 'color: #ef4444;';
     const isSelected = appState.selectedTickers.has(item.Ticker);
     const initial = getTickerInitial(item.Ticker);
+    const price = item.Price || item.Price_Local || 0;
+    const currency = item.Currency || 'USD';
 
     card.innerHTML = `
          <div class="card-action">
@@ -547,7 +547,7 @@ function createRefinedStockCard(item) {
                 <div class="sector-pill">${item.Sector || '-'}</div>
             </div>
             <div class="price-info">
-                 <span class="price-current">USD ${formatCurrency(item.Price || 0)}</span>
+                 <span class="price-current">${currency} ${formatNumber(price)}</span>
             </div>
         </div>
         
@@ -633,8 +633,8 @@ function createTickerChip(ticker) {
     const chip = document.createElement('div');
     chip.className = 'selected-ticker-chip';
     chip.innerHTML = `
-        <span>${ticker}</span>
-        <button class="remove-ticker" data-ticker="${ticker}">×</button>
+        < span > ${ticker}</span >
+            <button class="remove-ticker" data-ticker="${ticker}">×</button>
     `;
 
     const removeBtn = chip.querySelector('.remove-ticker');
@@ -650,7 +650,7 @@ function removeTickerFromSelection(ticker) {
     appState.selectedTickers.delete(ticker);
 
     // Update button visual state
-    const button = document.querySelector(`[data-ticker="${ticker}"].select-ticker-btn`);
+    const button = document.querySelector(`[data - ticker= "${ticker}"].select - ticker - btn`);
     if (button) {
         button.classList.remove('selected');
         button.textContent = '+';
@@ -727,18 +727,18 @@ function renderResultsStage3(data) {
                 const found = appState.analysisData.detailed_results.find(item => item.Ticker === t.ticker);
                 if (found) fullName = found.Company || found.Name || '';
             }
-            return fullName ? `${fullName} - ${t.ticker}` : t.ticker;
+            return fullName ? `${fullName} - ${t.ticker} ` : t.ticker;
         });
 
         let stocksText = '';
         if (count === 1) {
-            stocksText = `en la acción específica (${tickerNames[0]})`;
+            stocksText = `en la acción específica(${tickerNames[0]})`;
         } else {
             const last = tickerNames.pop();
-            stocksText = `en ${count} acciones específicas (${tickerNames.join(', ')} y ${last})`;
+            stocksText = `en ${count} acciones específicas(${tickerNames.join(', ')} y ${last})`;
         }
 
-        projectionSubtitle.innerHTML = `Estos son los resultados de la simulación: qué hubiera pasado de haber invertido <strong>${capital}</strong> ${stocksText} desde la fecha <strong>${date}</strong>.`;
+        projectionSubtitle.innerHTML = `Estos son los resultados de la simulación: qué hubiera pasado de haber invertido < strong > ${capital}</strong > ${stocksText} desde la fecha < strong > ${date}</strong >.`;
     }
 
     // Update portfolio metrics
@@ -762,7 +762,7 @@ function renderResultsStage3(data) {
         if (positiveReturns.length > 0) {
             const positiveHeader = document.createElement('div');
             positiveHeader.style.gridColumn = '1 / -1';
-            positiveHeader.innerHTML = `<h3 style="color: var(--primary); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(74, 222, 128, 0.2); padding-bottom: 0.5rem;">Estas acciones podrían ser una excelente oportunidad</h3>`;
+            positiveHeader.innerHTML = `< h3 style = "color: var(--primary); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(74, 222, 128, 0.2); padding-bottom: 0.5rem;" > Estas acciones podrían ser una excelente oportunidad</h3 > `;
             container.appendChild(positiveHeader);
 
             positiveReturns.forEach(ticker => {
@@ -775,7 +775,7 @@ function renderResultsStage3(data) {
         if (negativeReturns.length > 0) {
             const negativeHeader = document.createElement('div');
             negativeHeader.style.gridColumn = '1 / -1';
-            negativeHeader.innerHTML = `<h3 style="color: #ef4444; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 0.5rem;">Hay que analizarlas un poco más</h3>`;
+            negativeHeader.innerHTML = `< h3 style = "color: #ef4444; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 0.5rem;" > Hay que analizarlas un poco más</h3 > `;
             container.appendChild(negativeHeader);
 
             negativeReturns.forEach(ticker => {
@@ -795,7 +795,7 @@ function createPortfolioCard(ticker) {
     const initial = getTickerInitial(ticker.ticker);
 
     card.innerHTML = `
-        <div class="card-header">
+        < div class="card-header" >
             <div class="ticker-info">
                 <div class="ticker-symbol">
                     <div class="ticker-badge-small">${initial}</div>
@@ -806,7 +806,7 @@ function createPortfolioCard(ticker) {
             <div class="price-info">
                 <span class="price-current">USD ${formatCurrency(ticker.valor_actual)}</span>
             </div>
-        </div>
+        </div >
         
         <div class="card-metrics">
             <div class="metric-item">
@@ -916,8 +916,8 @@ function initHoverGlow() {
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            button.style.setProperty('--glow-x', `${x}px`);
-            button.style.setProperty('--glow-y', `${y}px`);
+            button.style.setProperty('--glow-x', `${x} px`);
+            button.style.setProperty('--glow-y', `${y} px`);
         }
     });
 }
