@@ -11,13 +11,32 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Abel&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inconsolata:wght@200..900&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-wrapper">
+                <a href="/" class="header-home-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                        fill="#00ff88">
+                        <path
+                            d="M480-240q69-17 114.5-79.5T640-458v-102l-160-80-160 80v102q0 76 45.5 138.5T480-240ZM160-120v-480l320-240 320 240v480H160Zm80-80h480v-360L480-740 240-560v360Zm240-270Z" />
+                    </svg>
+                    <span>Inicio</span>
+                </a>
+            </div>
+            <nav class="header-nav">
+                <button id="openGlossaryBtn" class="nav-button">Glosario</button>
+            </nav>
+        </div>
+    </header>
+
     <!-- Particles Background -->
     <div id="particles-js"></div>
 
@@ -26,15 +45,17 @@
     <div id="homeScreen" class="screen active">
         <div class="container">
             <div class="hero-content">
+
+                <img src="logo.png" alt="Home Background" class="home-background" style="
+width: 23em;
+
+    max-width: 100%;
+    margin-bottom: 0.5em;
+">
                 <div class="hero-badge">
                     <span class="badge-dot"></span>
                     EXPLORADOR DE MERCADOS GLOBALES
                 </div>
-                <img src="logo.png" alt="Home Background" class="home-background" style="
-    width: 23em;
-    margin-bottom: 3em;
-                    max-width: 100%;
-">
 
                 <p class="hero-subtitle1">
                     "El descubrimiento consiste no en buscar nuevos paisajes, sino en tener nuevos ojos."
@@ -54,6 +75,7 @@
                                 para el inversor institucional.</p>
                         </div>
                         <div class="market-arrow">
+                            <span class="hover-label">Analizar mercado ahora</span>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M7 17L17 7M17 7H7M17 7V17" />
                             </svg>
@@ -105,24 +127,6 @@
                     </div>
                 </div>
 
-                <div class="stats-row-home">
-                    <div class="stat-item">
-                        <span class="stat-number">8,000+</span>
-                        <span class="stat-label">Activos Analizados</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">20ms</span>
-                        <span class="stat-label">Tiempo de Ejecución</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">50+</span>
-                        <span class="stat-label">Métricas Combinadas</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">24/7</span>
-                        <span class="stat-label">Monitoreo</span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -169,13 +173,14 @@
             <div class="results-header">
                 <h1>Resultados del análisis</h1>
                 <p class="results-subtitle">
-                    Se encontraron <strong id="candidatesCount">-</strong> tickers que coinciden con sus criterios de
-                    alta calidad y subvaluación.
+
+                    Analizamos el mercado y encontramos <strong id="candidatesCount">-</strong> tickers que destacan por
+                    su calidad, flujo de caja sólido y potencial de subvaluación.
                 </p>
             </div>
             <div style="text-align: center; margin-top: 2rem;">
                 <button id="refineBtn" class="cta-button">
-                    <span>Refinar resultados</span>
+                    <span>Optimizar Lista de Activos</span>
                 </button>
             </div>
             <div id="resultsContent" class="results-content-area">
@@ -194,34 +199,43 @@
             <div class="results-header">
                 <p style="color: var(--primary); font-size: 0.875rem; margin-bottom: 0.5rem;">RESULTADOS REFINADOS
                 </p>
-                <h1>Categorías de Activos</h1>
+                <h1>Oportunidades de hoy</h1>
                 <p class="results-subtitle">
                     Hemos filtrado y categorizado los candidatos para tu proyección. Selecciona los mejores activos
                     abajo para agregar.
                 </p>
             </div>
             <div id="selectionCart" class="selection-cart" style="display: none;">
-                <div class="cart-header">
-                    <h3>Tu Selección (<span id="selectedCount">0</span>)</h3>
-                    <button id="clearSelection" class="text-button">Limpiar todo</button>
-                </div>
-                <div id="selectedTickersList" class="selected-tickers-list"></div>
-
-                <form id="followForm" class="follow-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="startDate">Fecha Inicial</label>
-                            <input type="date" id="startDate" required>
+                <div class="container cart-inner-wrapper">
+                    <div class="cart-top-row">
+                        <div class="cart-title-row">
+                            <span class="cart-title">Tu Selección (<span id="selectedCount">0</span>)</span>
+                            <p class="cart-description">
+                                Simulación histórica de inversión en activos seleccionados.
+                            </p>
                         </div>
-                        <div class="form-group">
-                            <label for="initialCapital">Inversión Inicial ($)</label>
-                            <input type="number" id="initialCapital" value="10000" min="1" step="0.01" required>
-                        </div>
+                        <button id="clearSelection" class="text-button">Limpiar todo</button>
                     </div>
-                    <button type="submit" class="cta-button">
-                        <span>Generar Proyección</span>
-                    </button>
-                </form>
+
+                    <div class="cart-main-row">
+                        <div id="selectedTickersList" class="selected-tickers-list"></div>
+                        <form id="followForm" class="follow-form">
+                            <div class="form-row-compact">
+                                <div class="form-group-compact">
+                                    <label for="startDate">FECHA INICIAL</label>
+                                    <input type="date" id="startDate" required>
+                                </div>
+                                <div class="form-group-compact">
+                                    <label for="initialCapital">INVERSIÓN INICIAL ($)</label>
+                                    <input type="number" id="initialCapital" value="10000" min="1" step="0.01" required>
+                                </div>
+                                <button type="submit" class="cta-button-compact">
+                                    <span>Generar Proyección</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div id="categoriesContainer"></div>
         </div>
@@ -231,24 +245,12 @@
     <div id="resultsScreen3" class="screen">
         <div class="container">
             <div class="results-header">
+                <h1 style="margin: 0; font-size: 2.5rem; font-weight: 200; color: #ffffff;">
+                    Resultado de Proyección </h1>
+                <p class="results-subtitle" id="projectionSubtitle" style="max-width: 900px; line-height: 1.6;">
+                    Resultado de Proyección
                 </p>
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                    <div class="category-icon" style="filter: drop-shadow(0 0 15px rgba(68, 183, 223, 0.4));">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px"
-                            fill="#44b7df">
-                            <path
-                                d="M480-520q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM280-120v-80h160v-124q-49-11-87.5-41.5T296-442q-75-9-125.5-65.5T120-640v-40q0-33 23.5-56.5T200-760h80v-80h400v80h80q33 0 56.5 23.5T840-680v40q0 76-50.5 132.5T664-442q-18 46-56.5 76.5T520-324v124h160v80H280Zm0-408v-152h-80v40q0 38 22 68.5t58 43.5Zm200 128q50 0 85-35t35-85v-240H360v240q0 50 35 85t85 35Zm200-128q36-13 58-43.5t22-68.5v-40h-80v152Zm-200-52Z" />
-                        </svg>
-                    </div>
-                    <h1 style="margin: 0; font-size: 2.5rem; font-weight: 200; color: #ffffff;">
-                        Seguimiento </h1>
-                </div>
-                <p class="results-subtitle">Métricas de rendimiento de tu portafolio desde <span
-                        id="startDateDisplay">-</span></p>
             </div>
-
-
-
             <div class="ticker-analysis">
                 <div id="portfolioGrid" class="cards-grid">
                     <!-- Portfolio cards injected here -->
@@ -261,6 +263,12 @@
                 </button>
             </div>
         </div>
+
+
+
+
+    </div>
+    </div>
     </div>
 
     <script type="module" src="app.js?v=2"></script>
@@ -327,6 +335,64 @@
             }
         });
     </script>
+    <!-- Glossary Modal -->
+    <div id="glossaryBackdrop" class="modal-backdrop"></div>
+    <div id="glossaryModal" class="modal-sidebar">
+        <div class="modal-header">
+            <div class="modal-title-row">
+                <h2>Diccionario Financiero</h2>
+            </div>
+            <button id="closeGlossaryBtn" class="close-modal-btn">&times;</button>
+        </div>
+
+        <div class="modal-content">
+            <!-- ROIC -->
+            <div class="glossary-card">
+                <div class="glossary-card-header">
+                    <h3 class="glossary-term">ROIC</h3>
+                    <span class="glossary-tag tag-profitability">Rentabilidad</span>
+                </div>
+                <p class="glossary-definition">"Return on Invested Capital". Mide qué tan eficiente es una empresa para
+                    generar retornos sobre el capital que ha invertido.</p>
+                <p class="glossary-importance-text">Es el mejor indicador de la ventaja competitiva (moat) de una
+                    empresa a largo plazo.</p>
+            </div>
+
+            <!-- Piotroski F-Score -->
+            <div class="glossary-card">
+                <div class="glossary-card-header">
+                    <h3 class="glossary-term">Piotroski F-Score</h3>
+                    <span class="glossary-tag tag-health">Salud Financiera</span>
+                </div>
+                <p class="glossary-definition">Un sistema de puntuación de 0 a 9 basado en nueve criterios contables
+                    para determinar la solidez de la posición financiera de una empresa.</p>
+                <p class="glossary-importance-text">Ayuda a filtrar empresas "baratas" que podrían estar en riesgo de
+                    quiebra o fraude contable.</p>
+            </div>
+
+            <!-- Growth -->
+            <div class="glossary-card">
+                <div class="glossary-card-header">
+                    <h3 class="glossary-term">Growth (Crecimiento)</h3>
+                    <span class="glossary-tag tag-momentum">Momentum</span>
+                </div>
+                <p class="glossary-definition">Mide el incremento porcentual de los ingresos o beneficios netos de la
+                    compañía en el último periodo reportado.</p>
+                <p class="glossary-importance-text">Sin crecimiento, el valor intrínseco de una empresa tiende a
+                    estancarse o declinar.</p>
+            </div>
+
+            <!-- MOS -->
+            <div class="glossary-card">
+                <div class="glossary-card-header">
+                    <h3 class="glossary-term">Margin of Safety (MOS)</h3>
+                    <span class="glossary-tag tag-risk">Gestión de Riesgo</span>
+                </div>
+                <p class="glossary-definition">La diferencia entre el valor intrínseco de una acción y su precio de
+                    mercado actual. Se usa para protegerse contra errores en la valoración.</p>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

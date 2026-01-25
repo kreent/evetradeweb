@@ -546,7 +546,7 @@ function updateSelectionCart() {
     const count = document.getElementById('selectedCount');
     const list = document.getElementById('selectedTickersList');
 
-    count.textContent = appState.selectedTickers.size;
+    if (count) count.textContent = appState.selectedTickers.size;
 
     if (appState.selectedTickers.size > 0) {
         cart.style.display = 'block';
@@ -645,10 +645,32 @@ function renderResultsStage3(data) {
 
     console.log('Rendering Results Stage 3');
 
-    // Ensure we display the user-provided start date or the one returned by API
-    const startDateDisplay = document.getElementById('startDateDisplay');
-    if (startDateDisplay) {
-        startDateDisplay.textContent = data.start_date || document.getElementById('startDate').value || '-';
+    const projectionSubtitle = document.getElementById('projectionSubtitle');
+    if (projectionSubtitle && data.analysis && data.analysis.ticker_analysis && data.analysis.ticker_analysis.detalle_por_accion) {
+        const capital = formatCurrency(document.getElementById('initialCapital').value || 1000);
+        const tickersData = data.analysis.ticker_analysis.detalle_por_accion;
+        const count = tickersData.length;
+        const date = data.start_date || document.getElementById('startDate').value || '-';
+
+        const tickerNames = tickersData.map(t => {
+            // Try to find the full name from Stage 2 data in appState
+            let fullName = '';
+            if (appState.analysisData && appState.analysisData.detailed_results) {
+                const found = appState.analysisData.detailed_results.find(item => item.Ticker === t.ticker);
+                if (found) fullName = found.Company || found.Name || '';
+            }
+            return fullName ? `${fullName} - ${t.ticker}` : t.ticker;
+        });
+
+        let stocksText = '';
+        if (count === 1) {
+            stocksText = `en la acción específica (${tickerNames[0]})`;
+        } else {
+            const last = tickerNames.pop();
+            stocksText = `en ${count} acciones específicas (${tickerNames.join(', ')} y ${last})`;
+        }
+
+        projectionSubtitle.innerHTML = `Estos son los resultados de la simulación: qué hubiera pasado si hubieras invertido <strong>${capital}</strong> ${stocksText} desde la fecha <strong>${date}</strong>.`;
     }
 
     // Update portfolio metrics
@@ -672,7 +694,7 @@ function renderResultsStage3(data) {
         if (positiveReturns.length > 0) {
             const positiveHeader = document.createElement('div');
             positiveHeader.style.gridColumn = '1 / -1';
-            positiveHeader.innerHTML = `<h3 style="color: var(--primary); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(74, 222, 128, 0.2); padding-bottom: 0.5rem;">Ganadores (${positiveReturns.length})</h3>`;
+            positiveHeader.innerHTML = `<h3 style="color: var(--primary); margin: 2rem 0 1rem; border-bottom: 1px solid rgba(74, 222, 128, 0.2); padding-bottom: 0.5rem;">Pudo ser una excelente oportunidad</h3>`;
             container.appendChild(positiveHeader);
 
             positiveReturns.forEach(ticker => {
@@ -685,7 +707,7 @@ function renderResultsStage3(data) {
         if (negativeReturns.length > 0) {
             const negativeHeader = document.createElement('div');
             negativeHeader.style.gridColumn = '1 / -1';
-            negativeHeader.innerHTML = `<h3 style="color: #ef4444; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 0.5rem;">En Riesgo (${negativeReturns.length})</h3>`;
+            negativeHeader.innerHTML = `<h3 style="color: #ef4444; margin: 2rem 0 1rem; border-bottom: 1px solid rgba(239, 68, 68, 0.2); padding-bottom: 0.5rem;">Hay que analizarlas con cuidado</h3>`;
             container.appendChild(negativeHeader);
 
             negativeReturns.forEach(ticker => {
@@ -786,9 +808,37 @@ function init() {
     initResultsScreen2();
     initResultsScreen3();
     initHoverGlow();
+    initGlossary();
 
     // Set default date to 01/01/2024 as requested
     document.getElementById('startDate').value = '2026-01-01';
+}
+
+// ================================================================
+// Glossary Logic
+// ================================================================
+function initGlossary() {
+    const openBtn = document.getElementById('openGlossaryBtn');
+    const closeBtn = document.getElementById('closeGlossaryBtn');
+    const modal = document.getElementById('glossaryModal');
+    const backdrop = document.getElementById('glossaryBackdrop');
+
+    const toggle = (show) => {
+        modal.classList.toggle('active', show);
+        backdrop.classList.toggle('active', show);
+        document.body.style.overflow = show ? 'hidden' : '';
+    };
+
+    openBtn.addEventListener('click', () => toggle(true));
+    closeBtn.addEventListener('click', () => toggle(false));
+    backdrop.addEventListener('click', () => toggle(false));
+
+    // Escape key to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            toggle(false);
+        }
+    });
 }
 
 // ================================================================
