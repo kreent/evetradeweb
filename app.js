@@ -118,50 +118,16 @@ let progressInterval = null;
 let currentProgress = 0;
 
 function startCircularProgress() {
-    const progressElement = document.getElementById('progressPercent');
-    const circle = document.querySelector('.progress-ring-progress');
-    const radius = 90;
-    const circumference = 2 * Math.PI * radius;
-
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    circle.style.strokeDashoffset = circumference;
-
+    // The new trend line loader is CSS-animated, no DOM manipulation needed
     currentProgress = 0;
-    progressElement.textContent = '0%';
-
-    // Simulate progress
-    progressInterval = setInterval(() => {
-        if (currentProgress < 95) {
-            currentProgress += Math.random() * 15;
-            if (currentProgress > 95) currentProgress = 95;
-
-            const offset = circumference - (currentProgress / 100) * circumference;
-            circle.style.strokeDashoffset = offset;
-            progressElement.textContent = `${Math.round(currentProgress)}%`;
-
-            // Update progress steps
-            updateProgressSteps(currentProgress);
-        }
-    }, 500);
 }
 
 function completeProgress() {
+    // Clear any intervals if they exist
     if (progressInterval) {
         clearInterval(progressInterval);
     }
-
-    const circle = document.querySelector('.progress-ring-progress');
-    const radius = 90;
-    const circumference = 2 * Math.PI * radius;
-
-    circle.style.strokeDashoffset = 0;
-    document.getElementById('progressPercent').textContent = '100%';
-
-    // Mark all steps as completed
-    document.querySelectorAll('.progress-step').forEach(step => {
-        step.classList.add('completed');
-        step.classList.remove('active');
-    });
+    currentProgress = 100;
 }
 
 function updateProgressSteps(progress) {

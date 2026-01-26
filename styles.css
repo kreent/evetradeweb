@@ -696,13 +696,12 @@ tbody {
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-    margin: 0 auto 3rem;
-    padding: 2.5rem;
-    background: rgba(30, 35, 41, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin: 0 auto 2rem;
+    background: rgb(0 32 65 / 65%);
+    border-radius: 1000px;
+    width: 300px;
+    height: 300px;
+    justify-content: center;
 }
 
 .loader-chart-container {
