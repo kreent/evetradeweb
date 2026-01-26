@@ -659,8 +659,8 @@ function createTickerChip(ticker) {
     const chip = document.createElement('div');
     chip.className = 'selected-ticker-chip';
     chip.innerHTML = `
-        < span > ${ticker}</span >
-            <button class="remove-ticker" data-ticker="${ticker}">×</button>
+        <span>${ticker}</span>
+        <button class="remove-ticker" data-ticker="${ticker}">×</button>
     `;
 
     const removeBtn = chip.querySelector('.remove-ticker');
