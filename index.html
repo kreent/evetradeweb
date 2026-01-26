@@ -146,14 +146,38 @@ width: 23em;
     <div id="loaderScreen" class="screen">
         <div class="container">
             <div class="loader-content">
-                <div class="circular-progress">
-                    <svg class="progress-ring" width="200" height="200">
-                        <circle class="progress-ring-circle" cx="100" cy="100" r="90" />
-                        <circle class="progress-ring-progress" cx="100" cy="100" r="90" />
-                    </svg>
-                    <div class="progress-text">
-                        <span id="progressPercent">0%</span>
-                        <span class="progress-label">ESCANEANDO</span>
+                <div class="trend-line-loader">
+                    <div class="loader-chart-container">
+                        <svg width="240" height="100" viewBox="0 0 200 80">
+                            <!-- Background path (guide) -->
+                            <path d="M0,60 L40,40 L80,55 L120,20 L160,35 L200,10" fill="none"
+                                stroke="rgba(255,255,255,0.03)" stroke-width="3" />
+
+                            <!-- Animated line with gradient -->
+                            <path d="M0,60 L40,40 L80,55 L120,20 L160,35 L200,10" fill="none"
+                                stroke="url(#lineGradient)" stroke-width="3" class="line-chart-svg"
+                                stroke-linecap="round" stroke-linejoin="round" />
+
+                            <!-- Pulse circle at the last point -->
+                            <circle cx="200" cy="10" r="4" fill="var(--primary)" class="pulse-dot" />
+                            <circle cx="200" cy="10" r="3" fill="var(--primary)" />
+
+                            <defs>
+                                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#00ff88" />
+                                    <stop offset="100%" stop-color="#a3ffce" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+
+                    <div class="loader-status">
+                        <div class="loader-dots">
+                            <div class="loader-dot"></div>
+                            <div class="loader-dot"></div>
+                            <div class="loader-dot"></div>
+                        </div>
+                        <span class="loader-text">Actualizando mercado...</span>
                     </div>
                 </div>
 
@@ -164,19 +188,6 @@ width: 23em;
                 <p class="results-subtitle">
                     Por favor espere, nuestro algoritmo está buscando las mejores oportunidades entre miles de activos.
                 </p>
-
-                <div class="progress-steps">
-                    <h3 style="margin-bottom: 1rem;">Progreso del Análisis</h3>
-                    <div class="progress-step">
-                        <span class="step-text">Conectando con API de Bolsa</span>
-                        <span class="step-time">120ms</span>
-                    </div>
-                    <div class="progress-step">
-                        <span class="step-text">Filtrando por volumen mínimo</span>
-                        <span class="step-time">850ms</span>
-                    </div>
-
-                </div>
             </div>
         </div>
     </div>
