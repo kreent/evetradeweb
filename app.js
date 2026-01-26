@@ -764,7 +764,7 @@ function renderResultsStage3(data) {
             stocksText = `en ${count} acciones específicas(${tickerNames.join(', ')} y ${last})`;
         }
 
-        projectionSubtitle.innerHTML = `Estos son los resultados de la simulación: qué hubiera pasado de haber invertido < strong > ${capital}</strong > ${stocksText} desde la fecha < strong > ${date}</strong >.`;
+        projectionSubtitle.innerHTML = `Estos son los resultados de la simulación: qué hubiera pasado de haber invertido <strong>${capital}</strong> ${stocksText} desde la fecha <strong>${date}</strong>.`;
     }
 
     // Update portfolio metrics
@@ -821,7 +821,7 @@ function createPortfolioCard(ticker) {
     const initial = getTickerInitial(ticker.ticker);
 
     card.innerHTML = `
-        < div class="card-header" >
+        <div class="card-header">
             <div class="ticker-info">
                 <div class="ticker-symbol">
                     <div class="ticker-badge-small">${initial}</div>
@@ -832,7 +832,7 @@ function createPortfolioCard(ticker) {
             <div class="price-info">
                 <span class="price-current">USD ${formatCurrency(ticker.valor_actual)}</span>
             </div>
-        </div >
+        </div>
         
         <div class="card-metrics">
             <div class="metric-item">
